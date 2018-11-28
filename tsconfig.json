@@ -4,9 +4,8 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "importHelpers": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "target": "es2015",
-        "outDir": "./build"
+        "target": "es5",
+        "outDir": "./build",
+        "lib": ["es2015"],
     },
 }

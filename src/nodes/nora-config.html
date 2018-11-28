@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nora-config', {
+        category: 'config',
+        defaults: {
+            name: {
+                value: 'nora config'
+            },
+            token: {
+                value: '',
+                required: true
+            }
+        },
+        paletteLabel: 'nora config',
+        label: function () {
+            return this.name || 'nora config';
+        },
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nora-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-token"><i class="fa fa-key"></i> Token</label>
+        <input type="text" id="node-config-input-token">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nora-config">
+    <p>NORA config</p>
+</script>
