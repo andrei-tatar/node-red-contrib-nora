@@ -1,0 +1,19 @@
+{
+  "name": "red-contrib-nora",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrei-tatar/node-red-contrib-nora.git"
+  },
+  "author": "Andrei Tatar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrei-tatar/node-red-contrib-nora/issues"
+  },
+  "homepage": "https://github.com/andrei-tatar/node-red-contrib-nora#readme"
+}
