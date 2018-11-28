@@ -15,5 +15,16 @@
   "bugs": {
     "url": "https://github.com/andrei-tatar/node-red-contrib-nora/issues"
   },
-  "homepage": "https://github.com/andrei-tatar/node-red-contrib-nora#readme"
+  "homepage": "https://github.com/andrei-tatar/node-red-contrib-nora#readme",
+  "devDependencies": {
+    "@types/socket.io-client": "^1.4.32",
+    "ts-node": "^7.0.1",
+    "tslib": "^1.9.3",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "rxjs": "^6.3.3",
+    "socket.io-client": "^2.1.1"
+  }
 }
