@@ -1,28 +1,40 @@
 import { Observable, Subject } from 'rxjs';
 import { delay, finalize, retryWhen, shareReplay, takeUntil } from 'rxjs/operators';
 import * as io from 'socket.io-client';
+import { Logger } from './logger';
 import { NoraConnection } from './nora-connection';
 
 export class NoraService {
 
+    private constructor(
+        private logger: Logger,
+    ) {
+    }
+
+    private static instance: NoraService;
+
     private socketByToken: {
         [token: string]: {
             stop: Subject<any>;
-            socket: Observable<NoraConnection>;
+            connection$: Observable<NoraConnection>;
             uses: number;
             stopTimer?: NodeJS.Timeout;
         };
     } = {};
 
-    constructor(red) {
+    static getService(RED) {
+        if (!this.instance) {
+            this.instance = new NoraService(RED.log);
+        }
+        return this.instance;
     }
 
-    getSocket(token: string) {
+    getConnection(token: string) {
         let existing = this.socketByToken[token];
         if (!existing) {
             const stop = new Subject();
             this.socketByToken[token] = existing = {
-                socket: this.createSocketObservable(token, stop),
+                connection$: this.createSocketObservable(token, stop),
                 uses: 0,
                 stop,
             };
@@ -33,7 +45,7 @@ export class NoraService {
             if (existing.stopTimer) {
                 clearTimeout(existing.stopTimer);
             }
-            return existing.socket.pipe(finalize(() => {
+            return existing.connection$.pipe(finalize(() => {
                 existing.uses--;
                 if (existing.uses === 0) {
                     clearTimeout(existing.stopTimer);
@@ -50,18 +62,22 @@ export class NoraService {
     }
 
     private createSocketObservable(token: string, stop: Observable<any>) {
+        const id = token.substr(-5);
         return new Observable<NoraConnection>(observer => {
-            console.log('nora: connecting');
+            this.logger.info(`nora (${id}): connecting`);
             const socket = io(`https://node-red-google-home.herokuapp.com/?token=${token}`);
+            socket.on('connect', () => this.logger.info(`nora (${id}): connected`));
+            socket.on('disconnect', reason => this.logger.warn(`nora (${id}): disconnected (${reason})`));
             socket.on('error', err => {
-                console.log(`nora: socket connection error: ${err}`);
+                this.logger.warn(`nora (${id}): socket connection error: ${err}`);
                 observer.error(new Error(`nora: socket connection error: ${err}`));
             });
-            observer.next(new NoraConnection(socket));
-            socket.on('connect', () => console.log('nora: connected'));
-            socket.on('disconnect', reason => console.log(`nora: disconnected (${reason})`));
+
+            const connection = new NoraConnection(this.logger, socket);
+            observer.next(connection);
             return () => {
-                console.log('nora: close connection');
+                this.logger.info(`nora (${id}): close connection`);
+                connection.destroy();
                 socket.close();
             };
         }).pipe(
