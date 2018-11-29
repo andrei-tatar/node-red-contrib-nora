@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-nora",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Set of nodes for google home integration",
   "keywords": [
     "node-red"
@@ -8,7 +8,8 @@
   "main": "none",
   "scripts": {
     "build": "tsc && cp src/nodes/*.html build/nodes/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pub": "npm run build && npm publish --registry https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",

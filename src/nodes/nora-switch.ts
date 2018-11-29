@@ -19,6 +19,7 @@ module.exports = function (RED) {
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'switch',
                     name: config.switchname,
+                    roomHint: config.roomhint || undefined,
                     state: { online: true, on: on$.value },
                 })),
                 shareReplay(1),
