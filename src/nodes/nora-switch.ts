@@ -18,7 +18,7 @@ module.exports = function (RED) {
             .pipe(
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'switch',
-                    name: config.switchname,
+                    name: config.devicename,
                     roomHint: config.roomhint || undefined,
                     state: { online: true, on: on$.value },
                 })),

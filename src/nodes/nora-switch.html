@@ -4,7 +4,7 @@
         color: 'rgb(153, 204, 255)',
         icon: 'assistant.png',
         defaults: {
-            switchname: {
+            devicename: {
                 value: 'Switch',
                 required: true,
             },
@@ -26,7 +26,7 @@
         outputs: 1,
         paletteLabel: 'switch',
         label: function () {
-            return this.name || this.switchname || 'switch';
+            return this.name || this.devicename || 'switch';
         },
         oneditprepare: function () {
             $('#node-input-onvalue').typedInput({
@@ -49,8 +49,8 @@
         <input type="text" id="node-input-nora">
     </div>
     <div class="form-row">
-        <label for="node-input-switchname"><i class="fa fa-i-cursor"></i> Switch</label>
-        <input type="text" id="node-input-switchname">
+        <label for="node-input-devicename"><i class="fa fa-i-cursor"></i> Switch</label>
+        <input type="text" id="node-input-devicename">
     </div>
     <div class="form-row">
         <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
