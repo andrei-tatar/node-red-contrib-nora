@@ -1,8 +1,11 @@
 {
   "name": "node-red-contrib-nora",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.2",
+  "description": "Set of nodes for google home integration",
+  "keywords": [
+    "node-red"
+  ],
+  "main": "none",
   "scripts": {
     "build": "tsc && cp src/nodes/*.html build/nodes/",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -30,7 +33,7 @@
     "socket.io-client": "^2.1.1"
   },
   "node-red": {
-    "version": ">=0.14",
+    "version": ">=0.14.0",
     "nodes": {
       "nora-config": "build/nodes/nora-config.js",
       "nora-switch": "build/nodes/nora-switch.js"

@@ -1,5 +1,8 @@
-import { Observable, Subject } from 'rxjs';
-import { bufferTime, debounceTime, filter, scan, shareReplay, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
+import {
+    bufferTime, debounceTime, filter, scan,
+    shareReplay, switchMap, takeUntil, withLatestFrom
+} from 'rxjs/operators';
 import { Logger } from './logger';
 import { NoraDevice } from './nora-device';
 
@@ -23,9 +26,17 @@ export class NoraConnection {
         logger: Logger,
         socket: SocketIOClient.Socket,
     ) {
-        this.devices$.pipe(
-            debounceTime(1000),
-            takeUntil(this.destroy$),
+        const connected$ = new BehaviorSubject(false);
+        socket.on('connect', () => connected$.next(true));
+        socket.on('disconnect', () => connected$.next(false));
+
+        connected$.pipe(
+            switchMap(
+                connected => connected
+                    ? this.devices$.pipe(debounceTime(1000))
+                    : EMPTY
+            ),
+            takeUntil(this.destroy$)
         ).subscribe(devices => {
             const syncDevices = {};
             for (const device of devices) {

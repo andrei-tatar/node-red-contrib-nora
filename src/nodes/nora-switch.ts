@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { shareReplay, skip, switchMap, takeUntil } from 'rxjs/operators';
 import { NoraService } from '../nora';
 
 module.exports = function (RED) {
@@ -25,7 +25,7 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
-        combineLatest(device$, on$)
+        combineLatest(device$, on$.pipe(skip(1)))
             .pipe(takeUntil(close$))
             .subscribe(([device, on]) => device.updateState({ on }));
 

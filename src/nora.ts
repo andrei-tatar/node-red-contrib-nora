@@ -66,6 +66,9 @@ export class NoraService {
         return new Observable<NoraConnection>(observer => {
             this.logger.info(`nora (${id}): connecting`);
             const socket = io(`https://node-red-google-home.herokuapp.com/?token=${token}`);
+            const connection = new NoraConnection(this.logger, socket);
+            observer.next(connection);
+
             socket.on('connect', () => this.logger.info(`nora (${id}): connected`));
             socket.on('disconnect', reason => this.logger.warn(`nora (${id}): disconnected (${reason})`));
             socket.on('error', err => {
@@ -73,8 +76,6 @@ export class NoraService {
                 observer.error(new Error(`nora: socket connection error: ${err}`));
             });
 
-            const connection = new NoraConnection(this.logger, socket);
-            observer.next(connection);
             return () => {
                 this.logger.info(`nora (${id}): close connection`);
                 connection.destroy();
