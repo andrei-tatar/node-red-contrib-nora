@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { delay, finalize, retryWhen, shareReplay, takeUntil } from 'rxjs/operators';
+import { delay, finalize, publishReplay, refCount, retryWhen, takeUntil } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 import { Logger } from './logger';
 import { NoraConnection } from './nora-connection';
@@ -84,7 +84,8 @@ export class NoraService {
         }).pipe(
             retryWhen(err => err.pipe(delay(10000))),
             takeUntil(stop),
-            shareReplay(1),
+            publishReplay(1),
+            refCount(),
         );
     }
 }

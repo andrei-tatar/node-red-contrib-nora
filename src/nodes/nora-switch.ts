@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { shareReplay, skip, switchMap, takeUntil } from 'rxjs/operators';
+import { publishReplay, refCount, skip, switchMap, takeUntil } from 'rxjs/operators';
 import { NoraService } from '../nora';
 
 module.exports = function (RED) {
@@ -22,7 +22,8 @@ module.exports = function (RED) {
                     roomHint: config.roomhint || undefined,
                     state: { online: true, on: on$.value },
                 })),
-                shareReplay(1),
+                publishReplay(1),
+                refCount(),
                 takeUntil(close$),
             );
 

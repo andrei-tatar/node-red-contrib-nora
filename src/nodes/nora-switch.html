@@ -1,7 +1,8 @@
 <script type="text/javascript">
     RED.nodes.registerType('nora-switch', {
         category: 'nora',
-        color: 'rgb(176, 223, 227)',
+        color: 'rgb(153, 204, 255)',
+        icon: 'assistant.png',
         defaults: {
             switchname: {
                 value: 'Switch',
@@ -24,7 +25,6 @@
         inputs: 1,
         outputs: 1,
         paletteLabel: 'switch',
-        icon: 'white-globe.png',
         label: function () {
             return this.name || this.switchname || 'switch';
         },

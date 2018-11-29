@@ -1,7 +1,7 @@
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
 import {
-    bufferTime, debounceTime, filter, scan,
-    shareReplay, switchMap, takeUntil, withLatestFrom
+    bufferTime, debounceTime, filter, publishReplay, refCount,
+    scan, switchMap, takeUntil, withLatestFrom
 } from 'rxjs/operators';
 import { Logger } from './logger';
 import { NoraDevice } from './nora-device';
@@ -15,10 +15,11 @@ export class NoraConnection {
                 case 'add':
                     return [...devices, event.device];
                 case 'remove':
-                    return devices.filter(d => d !== event.device);
+                    return devices.filter(d => d.id !== event.id);
             }
         }, []),
-        shareReplay(1),
+        publishReplay(1),
+        refCount(),
     );
     private update$ = new Subject<{ [id: string]: any }>();
 
@@ -95,7 +96,7 @@ export class NoraConnection {
             return () => {
                 this.deviceEvents$.next({
                     type: 'remove',
-                    device,
+                    id: device.id,
                 });
             };
         });
@@ -120,5 +121,5 @@ interface AddDeviceEvent {
 
 interface RemoveDeviceEvent {
     type: 'remove';
-    device: NoraDevice;
+    id: string;
 }
