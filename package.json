@@ -7,9 +7,10 @@
   ],
   "main": "none",
   "scripts": {
+    "clean": "rm -rf build",
     "build": "tsc && cp src/nodes/*.html build/nodes/ && cp -r src/nodes/icons build/nodes/icons",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pub": "npm run build && npm publish --registry https://registry.npmjs.org/"
+    "pub": "npm run clean && npm run build && npm publish --registry https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",
