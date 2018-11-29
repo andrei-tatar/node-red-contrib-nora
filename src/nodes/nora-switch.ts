@@ -7,7 +7,7 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
 
         const noraConfig = RED.nodes.getNode(config.nora);
-        if (!noraConfig) { return; }
+        if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
         const on$ = new BehaviorSubject(false);
