@@ -66,7 +66,7 @@ export class NoraService {
         return new Observable<NoraConnection>(observer => {
             this.logger.info(`nora (${id}): connecting`);
             const socket = io(`https://node-red-google-home.herokuapp.com/?token=${token}`);
-            const connection = new NoraConnection(this.logger, socket);
+            const connection = new NoraConnection(socket, this.logger);
             observer.next(connection);
 
             socket.on('connect', () => this.logger.info(`nora (${id}): connected`));

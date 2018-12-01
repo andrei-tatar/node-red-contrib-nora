@@ -1,6 +1,6 @@
 import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
 import {
-    bufferTime, debounceTime, filter, publishReplay, refCount,
+    debounceTime, publishReplay, refCount,
     scan, switchMap, takeUntil, withLatestFrom
 } from 'rxjs/operators';
 import { Logger } from './logger';
@@ -21,11 +21,10 @@ export class NoraConnection {
         publishReplay(1),
         refCount(),
     );
-    private update$ = new Subject<{ [id: string]: any }>();
 
     constructor(
+        private socket: SocketIOClient.Socket,
         logger: Logger,
-        socket: SocketIOClient.Socket,
     ) {
         const connected$ = new BehaviorSubject(false);
         socket.on('connect', () => connected$.next(true));
@@ -65,21 +64,6 @@ export class NoraConnection {
             }
         });
 
-        this.update$.pipe(
-            bufferTime(500),
-            filter(updates => updates.length > 0),
-            takeUntil(this.destroy$),
-        ).subscribe(updates => {
-            const merged: any = {};
-            for (const update of updates) {
-                const deviceIds = Object.keys(update);
-                for (const id of deviceIds) {
-                    merged[id] = update[id];
-                }
-            }
-            socket.emit('update', merged);
-        });
-
         socket.on('update', (changes) => update$.next(changes));
     }
 
@@ -108,7 +92,7 @@ export class NoraConnection {
     }
 
     sendDeviceUpdate(id: string, newState) {
-        this.update$.next({ [id]: newState });
+        this.socket.emit('update', { [id]: newState });
     }
 }
 
