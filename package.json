@@ -39,6 +39,7 @@
     "nodes": {
       "nora-config": "build/nodes/nora-config.js",
       "nora-switch": "build/nodes/nora-switch.js",
+      "nora-outlet": "build/nodes/nora-outlet.js",
       "nora-light": "build/nodes/nora-light.js"
     }
   }
