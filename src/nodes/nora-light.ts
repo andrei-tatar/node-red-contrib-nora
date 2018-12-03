@@ -70,6 +70,7 @@ module.exports = function (RED) {
                 } else {
                     this.send({
                         payload: state.on ? state.brightness : 0,
+                        topic: config.topic
                     });
                 }
             }
