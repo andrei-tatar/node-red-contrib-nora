@@ -55,7 +55,7 @@ export class NoraConnection {
             for (const id of updateIds) {
                 const device = devices.find(d => d.id === id);
                 if (!device) {
-                    logger.warn(`recevied update for missing device ${id}`);
+                    logger.warn(`received update for missing device ${id}`);
                     continue;
                 }
 
@@ -64,7 +64,23 @@ export class NoraConnection {
             }
         });
 
+        const activate$ = new Subject<{ ids: string[], deactivate: boolean }>();
+        activate$.pipe(
+            withLatestFrom(this.devices$),
+            takeUntil(this.destroy$),
+        ).subscribe(([activate, devices]) => {
+            for (const id of activate.ids) {
+                const device = devices.find(d => d.id === id);
+                if (!device) {
+                    logger.warn(`received activate state for missing device ${id}`);
+                    continue;
+                }
+
+                device.activateScene(activate.deactivate);
+            }
+        });
         socket.on('update', (changes) => update$.next(changes));
+        socket.on('activate-scene', (ids: string[], deactivate: boolean) => activate$.next({ ids, deactivate }));
     }
 
     addDevice(id: string, deviceConfig) {

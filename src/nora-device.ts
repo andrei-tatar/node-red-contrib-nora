@@ -2,9 +2,11 @@ import { Subject } from 'rxjs';
 import { NoraConnection } from './nora-connection';
 
 export class NoraDevice {
-    private stateChanged = new Subject<any>();
+    private _stateChanged = new Subject<any>();
+    private _activateScene = new Subject<{ deactivate: boolean }>();
 
-    readonly state$ = this.stateChanged.asObservable();
+    readonly state$ = this._stateChanged.asObservable();
+    readonly activateScene$ = this._activateScene.asObservable();
 
     constructor(
         public readonly id: string,
@@ -28,6 +30,10 @@ export class NoraDevice {
 
     setState(newState) {
         this.config.state = newState;
-        this.stateChanged.next(newState);
+        this._stateChanged.next(newState);
+    }
+
+    activateScene(deactivate: boolean) {
+        this._activateScene.next({ deactivate });
     }
 }
