@@ -1,5 +1,5 @@
-import { Observable, Subject } from 'rxjs';
-import { delay, finalize, publishReplay, refCount, retryWhen, takeUntil } from 'rxjs/operators';
+import { merge, Observable, Subject } from 'rxjs';
+import { delay, finalize, ignoreElements, publishReplay, refCount, retryWhen, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 import { Logger } from './logger';
 import { NoraConnection } from './nora-connection';
@@ -29,7 +29,7 @@ export class NoraService {
         return this.instance;
     }
 
-    getConnection(token: string) {
+    getConnection(token: string, node) {
         let existing = this.socketByToken[token];
         if (!existing) {
             const stop = new Subject();
@@ -45,19 +45,35 @@ export class NoraService {
             if (existing.stopTimer) {
                 clearTimeout(existing.stopTimer);
             }
-            return existing.connection$.pipe(finalize(() => {
-                existing.uses--;
-                if (existing.uses === 0) {
-                    clearTimeout(existing.stopTimer);
-                    existing.stopTimer = setTimeout(() => {
-                        if (existing.uses === 0) {
-                            existing.stop.next();
-                            existing.stop.complete();
-                            delete this.socketByToken[token];
-                        }
-                    }, 10000);
-                }
-            })).subscribe(observer);
+            const connected = new Subject<Observable<boolean>>();
+            const updateStatus$ = connected.pipe(
+                switchMap(c => c),
+                startWith(false),
+                tap(isConnected => {
+                    node.status(isConnected
+                        ? { fill: 'green', shape: 'dot', text: 'connected' }
+                        : { fill: 'red', shape: 'ring', text: 'not connected' });
+                }),
+                ignoreElements(),
+            );
+
+            return merge(updateStatus$, existing.connection$).pipe(
+                tap(nora => connected.next(nora.connected$)),
+                finalize(() => {
+                    existing.uses--;
+                    connected.complete();
+                    if (existing.uses === 0) {
+                        clearTimeout(existing.stopTimer);
+                        existing.stopTimer = setTimeout(() => {
+                            if (existing.uses === 0) {
+                                existing.stop.next();
+                                existing.stop.complete();
+                                delete this.socketByToken[token];
+                            }
+                        }, 10000);
+                    }
+                })
+            ).subscribe(observer);
         });
     }
 

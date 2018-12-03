@@ -21,18 +21,18 @@ export class NoraConnection {
         publishReplay(1),
         refCount(),
     );
+    private connected = new BehaviorSubject<boolean>(false);
+    readonly connected$ = this.connected.asObservable();
 
     constructor(
         private socket: SocketIOClient.Socket,
         logger: Logger,
     ) {
-        const connected$ = new BehaviorSubject(false);
-        socket.on('connect', () => connected$.next(true));
-        socket.on('disconnect', () => connected$.next(false));
-
-        connected$.pipe(
+        socket.on('connect', () => this.connected.next(true));
+        socket.on('disconnect', () => this.connected.next(false));
+        this.connected.pipe(
             switchMap(
-                connected => connected
+                connected => connected === true
                     ? this.devices$.pipe(debounceTime(1000))
                     : EMPTY
             ),
