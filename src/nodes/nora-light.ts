@@ -3,6 +3,18 @@ import { publishReplay, refCount, skip, switchMap, takeUntil } from 'rxjs/operat
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
+interface LightDeviceState {
+    on: boolean;
+    brightness?: number;
+    color?: {
+        spectrumHsv: {
+            hue: number;
+            saturation: number;
+            value: number;
+        }
+    };
+}
+
 module.exports = function (RED) {
     RED.nodes.registerType('nora-light', function (config) {
         RED.nodes.createNode(this, config);
@@ -12,12 +24,26 @@ module.exports = function (RED) {
 
         const brightnessControl = !!config.brightnesscontrol;
         const statepayload = !!config.statepayload;
+        const colorControl = !!config.lightcolor;
         const { value: onValue, type: onType } = convertValueType(RED, config.onvalue, config.onvalueType, { defaultValue: true });
         const { value: offValue, type: offType } = convertValueType(RED, config.offvalue, config.offvalueType, { defaultValue: false });
 
         const close$ = new Subject();
-        const initialState: { brightness?: number, on: boolean } = { on: false };
-        if (brightnessControl) { initialState.brightness = 100; }
+        const initialState: LightDeviceState = {
+            on: false
+        };
+        if (brightnessControl) {
+            initialState.brightness = 100;
+        }
+        if (colorControl) {
+            initialState.color = {
+                spectrumHsv: {
+                    hue: 0,
+                    saturation: 0,
+                    value: 1,
+                },
+            };
+        }
         const state$ = new BehaviorSubject(initialState);
         const device$ = NoraService
             .getService(RED)
@@ -26,6 +52,7 @@ module.exports = function (RED) {
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'light',
                     brightnessControl: brightnessControl,
+                    colorControl: colorControl,
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
                     state: {
@@ -45,12 +72,14 @@ module.exports = function (RED) {
         device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
-        ).subscribe(state => {
-            // TODO: use emit
+        ).subscribe((state: LightDeviceState) => {
+            state$.value.on = state.on;
             if (brightnessControl) {
                 state$.value.brightness = state.brightness;
             }
-            state$.value.on = state.on;
+            if (colorControl) {
+                state$.value.color = state.color;
+            }
 
             if (!brightnessControl) {
                 const value = state.on;
