@@ -29,8 +29,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'onvalueType') : function (v) {
-                    return true
-                })
+                        return true
+                    })
             },
             onvalueType: {
                 value: 'bool'
@@ -40,8 +40,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'offvalueType') : function (v) {
-                    return true
-                })
+                        return true
+                    })
             },
             offvalueType: {
                 value: 'bool'
@@ -113,5 +113,12 @@
 </script>
 
 <script type="text/x-red" data-help-name="nora-scene">
-    TODO
+<p>
+    Represents a <a href="https://developers.google.com/actions/smarthome/traits/scene">Google Home scene</a>.
+    <br>
+    Outputs the <strong>Activate</strong> message when Google Home activates the scene. If <strong>Scene reversible</strong>
+    is checked, it will output the <strong>Deactivate</strong> message when Google Home deactivates the scene.
+    <br>
+    <strong>Room Hint</strong>: Provides the current room of the scene in the user's home to simplify setup.
+</p>
 </script>

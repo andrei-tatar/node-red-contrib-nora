@@ -32,8 +32,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'onvalueType') : function (v) {
-                    return true
-                })
+                        return true
+                    })
             },
             onvalueType: {
                 value: 'bool'
@@ -43,8 +43,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'offvalueType') : function (v) {
-                    return true
-                })
+                        return true
+                    })
             },
             offvalueType: {
                 value: 'bool'
@@ -124,5 +124,18 @@
 </script>
 
 <script type="text/x-red" data-help-name="nora-light">
-    TODO
+<p>
+    Represents a <a href="https://developers.google.com/actions/smarthome/guides/light">Google Home light</a>. Outputs
+    a message when Google Home changes the state of the light and updates the
+    state of the light in Google Home on input messages.
+    <br>
+    If <strong>allow brightness control</strong> is unchecked, the node will work like a switch
+    outputing the On payload when the light is turned on or the off payload when turned off.
+    <br>
+    In brightnesss control mode, if <strong>Send/receive complete state</strong> is checked, the input/output payload
+    is in the following format <code>{on: boolean, brightness: number (0-100)}</code>, otherwise the payload is only a
+    number (0-100) representing the brightness (0 meaning the light is off, 1-100 on with the specificed brightness).
+    <br>
+    <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
+</p>
 </script>
