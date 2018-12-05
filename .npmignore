@@ -4,3 +4,4 @@ src/
 .gitignore
 .npmignore
 ts*.json
+logo-*.png
