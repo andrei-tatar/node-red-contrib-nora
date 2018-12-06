@@ -1,5 +1,8 @@
-import { merge, Observable, Subject } from 'rxjs';
-import { delay, finalize, ignoreElements, publishReplay, refCount, retryWhen, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, merge, Observable, Subject, EMPTY } from 'rxjs';
+import {
+    delay, distinctUntilChanged, finalize, ignoreElements, publishReplay,
+    refCount, retryWhen, startWith, switchMap, takeUntil, tap
+} from 'rxjs/operators';
 import * as io from 'socket.io-client';
 import { Logger } from './logger';
 import { NoraConnection } from './nora-connection';
@@ -29,7 +32,7 @@ export class NoraService {
         return this.instance;
     }
 
-    getConnection(token: string, node) {
+    getConnection(token: string, node, state: Observable<string> = EMPTY) {
         let existing = this.socketByToken[token];
         if (!existing) {
             const stop = new Subject();
@@ -46,16 +49,20 @@ export class NoraService {
                 clearTimeout(existing.stopTimer);
             }
             const connected = new Subject<Observable<boolean>>();
-            const updateStatus$ = connected.pipe(
+            const connected$ = connected.pipe(
                 switchMap(c => c),
                 startWith(false),
-                tap(isConnected => {
-                    node.status(isConnected
-                        ? { fill: 'green', shape: 'dot', text: 'connected' }
-                        : { fill: 'red', shape: 'ring', text: 'not connected' });
-                }),
-                ignoreElements(),
+                distinctUntilChanged()
             );
+            const updateStatus$ = combineLatest(connected$, state)
+                .pipe(
+                    tap(([isConnected, currentState]) => {
+                        node.status(isConnected
+                            ? { fill: 'green', shape: 'dot', text: `connected ${currentState}` }
+                            : { fill: 'red', shape: 'ring', text: 'not connected' });
+                    }),
+                    ignoreElements(),
+                );
 
             return merge(updateStatus$, existing.connection$).pipe(
                 tap(nora => connected.next(nora.connected$)),

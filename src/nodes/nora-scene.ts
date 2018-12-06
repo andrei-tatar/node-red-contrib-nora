@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { publishReplay, refCount, switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
@@ -15,7 +15,7 @@ module.exports = function (RED) {
 
         const close$ = new Subject();
 
-        const device$ = NoraService
+        NoraService
             .getService(RED)
             .getConnection(noraConfig.token, this)
             .pipe(
@@ -26,21 +26,15 @@ module.exports = function (RED) {
                     sceneReversible: !!config.scenereversible,
                     state: { online: true },
                 })),
-                publishReplay(1),
-                refCount(),
+                switchMap(device => device.activateScene$),
                 takeUntil(close$),
-            );
-
-        device$.pipe(
-            switchMap(d => d.activateScene$),
-            takeUntil(close$),
-        ).subscribe(({ deactivate }) => {
-            const value = !deactivate;
-            this.send({
-                payload: getValue(RED, this, value ? onValue : offValue, value ? onType : offType),
-                topic: config.topic
+            ).subscribe(({ deactivate }) => {
+                const value = !deactivate;
+                this.send({
+                    payload: getValue(RED, this, value ? onValue : offValue, value ? onType : offType),
+                    topic: config.topic
+                });
             });
-        });
 
         this.on('close', () => {
             close$.next();

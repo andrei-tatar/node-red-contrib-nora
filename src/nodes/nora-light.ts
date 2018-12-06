@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { publishReplay, refCount, skip, switchMap, takeUntil } from 'rxjs/operators';
+import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
@@ -45,9 +45,11 @@ module.exports = function (RED) {
             };
         }
         const state$ = new BehaviorSubject(initialState);
+        const stateString$ = new Subject<string>();
+
         const device$ = NoraService
             .getService(RED)
-            .getConnection(noraConfig.token, this)
+            .getConnection(noraConfig.token, this, stateString$)
             .pipe(
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'light',
@@ -65,14 +67,19 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
-        combineLatest(device$, state$.pipe(skip(1)))
-            .pipe(takeUntil(close$))
+        combineLatest(device$, state$)
+            .pipe(
+                tap(([_, state]) => notifyState(state)),
+                skip(1),
+                takeUntil(close$)
+            )
             .subscribe(([device, state]) => device.updateState({ ...state }));
 
         device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
         ).subscribe((state: LightDeviceState) => {
+            notifyState(state);
             state$.value.on = state.on;
             if (brightnessControl) {
                 state$.value.brightness = state.brightness;
@@ -143,6 +150,14 @@ module.exports = function (RED) {
             close$.next();
             close$.complete();
         });
+
+        function notifyState(state: LightDeviceState) {
+            let stateString = state.on ? 'on' : 'off';
+            if (brightnessControl) {
+                stateString += ` ${state.brightness}`;
+            }
+            stateString$.next(`(${stateString})`);
+        }
     });
 };
 

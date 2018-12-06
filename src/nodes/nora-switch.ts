@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { publishReplay, refCount, skip, switchMap, takeUntil } from 'rxjs/operators';
+import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
@@ -12,13 +12,14 @@ module.exports = function (RED) {
 
         const close$ = new Subject();
         const on$ = new BehaviorSubject(false);
+        const stateString$ = new Subject<string>();
 
         const { value: onValue, type: onType } = convertValueType(RED, config.onvalue, config.onvalueType, { defaultValue: true });
         const { value: offValue, type: offType } = convertValueType(RED, config.offvalue, config.offvalueType, { defaultValue: false });
 
         const device$ = NoraService
             .getService(RED)
-            .getConnection(noraConfig.token, this)
+            .getConnection(noraConfig.token, this, stateString$)
             .pipe(
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'switch',
@@ -31,8 +32,12 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
-        combineLatest(device$, on$.pipe(skip(1)))
-            .pipe(takeUntil(close$))
+        combineLatest(device$, on$)
+            .pipe(
+                tap(([_, on]) => notifyState(on)),
+                skip(1),
+                takeUntil(close$),
+            )
             .subscribe(([device, on]) => device.updateState({ on }));
 
         device$.pipe(
@@ -40,6 +45,7 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(s => {
             const value = s.on;
+            notifyState(s.on);
             this.send({
                 payload: getValue(RED, this, value ? onValue : offValue, value ? onType : offType),
                 topic: config.topic
@@ -60,6 +66,10 @@ module.exports = function (RED) {
             close$.next();
             close$.complete();
         });
+
+        function notifyState(on: boolean) {
+            stateString$.next(`(${on ? 'on' : 'off'})`);
+        }
     });
 };
 
