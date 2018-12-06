@@ -75,12 +75,12 @@
                     $('#light-on').hide();
                     $('#light-off').hide();
                     $('#light-full-state').show();
-                    $('#light-color').show();
+                    // $('#light-color').show();
                 } else {
                     $('#light-on').show();
                     $('#light-off').show();
                     $('#light-full-state').hide();
-                    $('#light-color').hide();
+                    // $('#light-color').hide();
                 }
             });
         },
@@ -100,10 +100,10 @@
         <label style="width:auto" for="node-input-brightnesscontrol"><i class="fa fa-arrow-right"></i> Allow brightness control: </label>
         <input type="checkbox" checked id="node-input-brightnesscontrol" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
-    <div class="form-row" id="light-color">
+    <!-- <div class="form-row" id="light-color">
         <label style="width:auto" for="node-input-lightcolor"><i class="fa fa-arrow-right"></i> Color support (RGB): </label>
         <input type="checkbox" id="node-input-lightcolor" style="display:inline-block; width:auto; vertical-align:top;">
-    </div>
+    </div> -->
     <div class="form-row" id="light-full-state">
         <label style="width:auto" for="node-input-statepayload"><i class="fa fa-arrow-right"></i> Send/receive complete state as payload: </label>
         <input type="checkbox" checked id="node-input-statepayload" style="display:inline-block; width:auto; vertical-align:top;">
