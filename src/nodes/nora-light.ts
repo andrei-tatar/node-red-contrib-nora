@@ -51,7 +51,7 @@ module.exports = function (RED) {
 
         const device$ = NoraService
             .getService(RED)
-            .getConnection(noraConfig.token, this, stateString$)
+            .getConnection(noraConfig, this, stateString$)
             .pipe(
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'light',

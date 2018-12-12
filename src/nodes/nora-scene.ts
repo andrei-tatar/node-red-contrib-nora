@@ -18,7 +18,7 @@ module.exports = function (RED) {
 
         NoraService
             .getService(RED)
-            .getConnection(noraConfig.token, this)
+            .getConnection(noraConfig, this)
             .pipe(
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'scene',

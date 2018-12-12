@@ -10,3 +10,8 @@ export interface NodeInterface {
     warn(msg: string);
     error(msg: string);
 }
+
+export interface ConfigNode {
+    token: string;
+    group: string;
+}

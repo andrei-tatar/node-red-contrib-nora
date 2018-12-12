@@ -1,10 +1,11 @@
-import { combineLatest, merge, Observable, Subject, EMPTY } from 'rxjs';
+import { combineLatest, EMPTY, merge, Observable, Subject } from 'rxjs';
 import {
     delay, distinctUntilChanged, finalize, ignoreElements, publishReplay,
     refCount, retryWhen, startWith, switchMap, takeUntil, tap
 } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 import { Logger } from './logger';
+import { ConfigNode } from './node';
 import { NoraConnection } from './nora-connection';
 
 export class NoraService {
@@ -16,8 +17,8 @@ export class NoraService {
 
     private static instance: NoraService;
 
-    private socketByToken: {
-        [token: string]: {
+    private sockets: {
+        [key: string]: {
             stop: Subject<any>;
             connection$: Observable<NoraConnection>;
             uses: number;
@@ -32,12 +33,13 @@ export class NoraService {
         return this.instance;
     }
 
-    getConnection(token: string, node, state: Observable<string> = EMPTY) {
-        let existing = this.socketByToken[token];
+    getConnection({ token, group }: ConfigNode, node, state: Observable<string> = EMPTY) {
+        const key = `${group || ''}:${token}`;
+        let existing = this.sockets[key];
         if (!existing) {
             const stop = new Subject();
-            this.socketByToken[token] = existing = {
-                connection$: this.createSocketObservable(token, stop),
+            this.sockets[key] = existing = {
+                connection$: this.createSocketObservable(token, group, stop),
                 uses: 0,
                 stop,
             };
@@ -75,7 +77,7 @@ export class NoraService {
                             if (existing.uses === 0) {
                                 existing.stop.next();
                                 existing.stop.complete();
-                                delete this.socketByToken[token];
+                                delete this.sockets[key];
                             }
                         }, 10000);
                     }
@@ -84,11 +86,15 @@ export class NoraService {
         });
     }
 
-    private createSocketObservable(token: string, stop: Observable<any>) {
+    private createSocketObservable(token: string, group: string, stop: Observable<any>) {
         const id = token.substr(-5);
         return new Observable<NoraConnection>(observer => {
             this.logger.info(`nora (${id}): connecting`);
-            const socket = io(`https://node-red-google-home.herokuapp.com/?token=${token}`);
+            let uri = `https://node-red-google-home.herokuapp.com/?token=${encodeURIComponent(token)}`;
+            if (group) {
+                uri += `&group=${encodeURIComponent(group)}`;
+            }
+            const socket = io(uri);
             const connection = new NoraConnection(socket, this.logger);
             observer.next(connection);
 
