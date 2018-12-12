@@ -1,10 +1,11 @@
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
+import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
 module.exports = function (RED) {
-    RED.nodes.registerType('nora-scene', function (config) {
+    RED.nodes.registerType('nora-scene', function (this: NodeInterface, config) {
         RED.nodes.createNode(this, config);
 
         const noraConfig = RED.nodes.getNode(config.nora);

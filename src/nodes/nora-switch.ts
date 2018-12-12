@@ -1,10 +1,11 @@
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
 module.exports = function (RED) {
-    RED.nodes.registerType('nora-switch', function (config) {
+    RED.nodes.registerType('nora-switch', function (this: NodeInterface, config) {
         RED.nodes.createNode(this, config);
 
         const noraConfig = RED.nodes.getNode(config.nora);

@@ -1,5 +1,6 @@
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
@@ -16,7 +17,7 @@ interface LightDeviceState {
 }
 
 module.exports = function (RED) {
-    RED.nodes.registerType('nora-light', function (config) {
+    RED.nodes.registerType('nora-light', function (this: NodeInterface, config) {
         RED.nodes.createNode(this, config);
 
         const noraConfig = RED.nodes.getNode(config.nora);
@@ -27,6 +28,7 @@ module.exports = function (RED) {
         const colorControl = !!config.lightcolor;
         const { value: onValue, type: onType } = convertValueType(RED, config.onvalue, config.onvalueType, { defaultValue: true });
         const { value: offValue, type: offType } = convertValueType(RED, config.offvalue, config.offvalueType, { defaultValue: false });
+        const brightnessOverride = Math.max(0, Math.min(100, Math.round(config.brightnessoverride))) || 0;
 
         const close$ = new Subject();
         const initialState: LightDeviceState = {
@@ -123,24 +125,41 @@ module.exports = function (RED) {
                 }
             } else {
                 if (statepayload) {
-                    const state = { ...state$.value };
-                    let update = false;
-                    if ('brightness' in msg.payload && typeof msg.payload.brightness === 'number' && isFinite(msg.payload.brightness)) {
-                        state.brightness = Math.max(1, Math.min(100, Math.round(msg.payload.brightness)));
-                        update = true;
+                    if (typeof msg.payload !== 'object' || !msg.payload) {
+                        this.error('Payload must be an object like { [on]: true/false, [brightness]: 0-100 }');
+                    } else {
+                        const state = { ...state$.value };
+                        let update = false;
+                        if ('brightness' in msg.payload && typeof msg.payload.brightness === 'number' && isFinite(msg.payload.brightness)) {
+                            state.brightness = Math.max(1, Math.min(100, Math.round(msg.payload.brightness)));
+                            update = true;
+                        }
+                        if ('on' in msg.payload && typeof msg.payload.on === 'boolean') {
+                            state.on = msg.payload.on;
+                            update = true;
+                        }
+                        if (update) { state$.next(state); }
                     }
-                    if ('on' in msg.payload && typeof msg.payload.on === 'boolean') {
-                        state.on = msg.payload.on;
-                        update = true;
-                    }
-                    if (update) { state$.next(state); }
                 } else {
                     const brightness = Math.max(0, Math.min(100, Math.round(msg.payload)));
                     if (isFinite(brightness)) {
-                        state$.next({
-                            on: brightness > 0,
-                            brightness: brightness === 0 ? 100 : brightness,
-                        });
+                        if (brightness === 0) {
+                            if (brightnessOverride !== 0) {
+                                state$.next({
+                                    on: false,
+                                    brightness: brightnessOverride,
+                                });
+                            } else {
+                                state$.next({ on: false });
+                            }
+                        } else {
+                            state$.next({
+                                on: true,
+                                brightness: brightness,
+                            });
+                        }
+                    } else {
+                        this.error('Payload must be a number in range 0-100');
                     }
                 }
             }

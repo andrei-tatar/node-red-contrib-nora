@@ -17,6 +17,12 @@
             statepayload: {
                 value: true,
             },
+            brightnessoverride: {
+                value: '',
+                validate: function (v) {
+                    return !v || RED.validators.number()(v);
+                },
+            },
             roomhint: {
                 value: ''
             },
@@ -83,6 +89,13 @@
                     // $('#light-color').hide();
                 }
             });
+            $('node-input-statepayload').change(function () {
+                if (this.checked) {
+                    $('#light-brightnessoverride').hide();
+                } else {
+                    $('#light-brightnessoverride').show();
+                }
+            });
         },
     });
 </script>
@@ -97,7 +110,7 @@
         <input type="text" id="node-input-devicename">
     </div>
     <div class="form-row">
-        <label style="width:auto" for="node-input-brightnesscontrol"><i class="fa fa-arrow-right"></i> Allow brightness control: </label>
+        <label style="width:auto" for="node-input-brightnesscontrol"><i class="fa fa-lightbulb-o"></i> Allow brightness control: </label>
         <input type="checkbox" checked id="node-input-brightnesscontrol" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
     <!-- <div class="form-row" id="light-color">
@@ -107,6 +120,10 @@
     <div class="form-row" id="light-full-state">
         <label style="width:auto" for="node-input-statepayload"><i class="fa fa-arrow-right"></i> Send/receive complete state as payload: </label>
         <input type="checkbox" checked id="node-input-statepayload" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row" id="light-brightnessoverride">
+        <label for="node-input-brightnessoverride" style="width:auto"><i class="fa fa-lightbulb-o"></i> Override brightness when input is 0</label>
+        <input type="text" id="node-input-brightnessoverride" style="width:100px">
     </div>
     <div class="form-row" id="light-on">
         <label for="node-input-onvalue" style="padding-left:25px; margin-right:-25px">On Payload</label>
@@ -144,6 +161,11 @@
     In brightnesss control mode, if <strong>Send/receive complete state</strong> is checked, the input/output payload
     is in the following format <code>{on: boolean, brightness: number (0-100)}</code>, otherwise the payload is only a
     number (0-100) representing the brightness (0 meaning the light is off, 1-100 on with the specificed brightness).
+    <br>
+    <strong>Override brightness when input is 0</strong> is the value the brightness is set when <strong>Send/receive
+        complete state</strong> is unchecked and a value of 0 is received on the input. This is used so that the next
+    time you ask Google Home to turn on a light, it uses this override brightness instead of the last value. You can
+    leave the input empty to use the last brightness value.
     <br>
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
 </p>
