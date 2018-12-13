@@ -78,6 +78,11 @@ module.exports = function (RED) {
             .subscribe(([device, state]) => device.updateState({ ...state }));
 
         device$.pipe(
+            switchMap(d => d.errors$),
+            takeUntil(close$),
+        ).subscribe(err => this.warn(err));
+
+        device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
         ).subscribe((state: LightDeviceState) => {
@@ -146,14 +151,19 @@ module.exports = function (RED) {
                         if (brightness === 0) {
                             if (brightnessOverride !== 0) {
                                 state$.next({
+                                    ...state$.value,
                                     on: false,
                                     brightness: brightnessOverride,
                                 });
                             } else {
-                                state$.next({ on: false });
+                                state$.next({
+                                    ...state$.value,
+                                    on: false,
+                                });
                             }
                         } else {
                             state$.next({
+                                ...state$.value,
                                 on: true,
                                 brightness: brightness,
                             });

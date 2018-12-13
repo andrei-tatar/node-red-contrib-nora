@@ -42,6 +42,11 @@ module.exports = function (RED) {
             .subscribe(([device, on]) => device.updateState({ on }));
 
         device$.pipe(
+            switchMap(d => d.errors$),
+            takeUntil(close$),
+        ).subscribe(err => this.warn(err));
+
+        device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
         ).subscribe(s => {

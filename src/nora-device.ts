@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { NoraConnection } from './nora-connection';
 
 export class NoraDevice {
@@ -7,6 +8,7 @@ export class NoraDevice {
 
     readonly state$ = this._stateChanged.asObservable();
     readonly activateScene$ = this._activateScene.asObservable();
+    readonly errors$ = this.connection.errors$.pipe(filter(e => e.device === this.id), map(e => e.msg));
 
     constructor(
         public readonly id: string,

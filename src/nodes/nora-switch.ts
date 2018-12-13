@@ -33,6 +33,11 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
+        device$.pipe(
+            switchMap(d => d.errors$),
+            takeUntil(close$),
+        ).subscribe(err => this.warn(err));
+
         combineLatest(device$, on$)
             .pipe(
                 tap(([_, on]) => notifyState(on)),

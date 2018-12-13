@@ -22,7 +22,9 @@ export class NoraConnection {
         refCount(),
     );
     private connected = new BehaviorSubject<boolean>(false);
+    private errors = new Subject<{ device: string, msg: string }>();
     readonly connected$ = this.connected.asObservable();
+    readonly errors$ = this.errors.asObservable();
 
     constructor(
         private socket: SocketIOClient.Socket,
@@ -43,7 +45,7 @@ export class NoraConnection {
                 syncDevices[device.id] = device.config;
             }
             logger.info(`nora: sync ${devices.length} devices`);
-            socket.emit('sync', syncDevices);
+            socket.emit('sync', syncDevices, 'req:sync');
         });
 
         const update$ = new Subject();
@@ -80,6 +82,13 @@ export class NoraConnection {
             }
         });
         socket.on('update', (changes) => update$.next(changes));
+        socket.on('error', (reqId: string, msg: string) => {
+            if (reqId === 'req:sync') {
+                logger.warn(`nora: sync error (${msg})`);
+            } else {
+                this.errors.next({ device: reqId.substring(4), msg });
+            }
+        });
         socket.on('activate-scene', (ids: string[], deactivate: boolean) => activate$.next({ ids, deactivate }));
     }
 
@@ -108,7 +117,7 @@ export class NoraConnection {
     }
 
     sendDeviceUpdate(id: string, newState) {
-        this.socket.emit('update', { [id]: newState });
+        this.socket.emit('update', { [id]: newState }, `req:${id}`);
     }
 }
 
