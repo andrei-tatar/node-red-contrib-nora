@@ -82,7 +82,7 @@ export class NoraConnection {
             }
         });
         socket.on('update', (changes) => update$.next(changes));
-        socket.on('error', (reqId: string, msg: string) => {
+        socket.on('action-error', (reqId: string, msg: string) => {
             if (reqId === 'req:sync') {
                 logger.warn(`nora: sync error (${msg})`);
             } else {
