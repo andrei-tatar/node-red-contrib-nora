@@ -82,15 +82,22 @@
                     $('#light-off').hide();
                     $('#light-full-state').show();
                     // $('#light-color').show();
+
+                    if ($('#node-input-statepayload').is(':checked')) {
+                        $('#light-brightnessoverride').hide();
+                    } else {
+                        $('#light-brightnessoverride').show();
+                    }
                 } else {
                     $('#light-on').show();
                     $('#light-off').show();
                     $('#light-full-state').hide();
+                    $('#light-brightnessoverride').hide();
                     // $('#light-color').hide();
                 }
             });
-            $('node-input-statepayload').change(function () {
-                if (this.checked) {
+            $('#node-input-statepayload').change(function () {
+                if (this.checked || !$('#node-input-brightnesscontrol').is(':checked')) {
                     $('#light-brightnessoverride').hide();
                 } else {
                     $('#light-brightnessoverride').show();
