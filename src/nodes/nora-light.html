@@ -14,6 +14,9 @@
             brightnesscontrol: {
                 value: true,
             },
+            passthru: {
+                value: false,
+            },
             statepayload: {
                 value: true,
             },
@@ -41,8 +44,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'onvalueType') : function (v) {
-                        return true
-                    })
+                    return true
+                })
             },
             onvalueType: {
                 value: 'bool'
@@ -52,8 +55,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'offvalueType') : function (v) {
-                        return true
-                    })
+                    return true
+                })
             },
             offvalueType: {
                 value: 'bool'
@@ -117,6 +120,10 @@
         <input type="text" id="node-input-devicename">
     </div>
     <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
+        <input type="checkbox" checked id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
         <label style="width:auto" for="node-input-brightnesscontrol"><i class="fa fa-lightbulb-o"></i> Allow brightness control: </label>
         <input type="checkbox" checked id="node-input-brightnesscontrol" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
@@ -157,7 +164,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="nora-light">
-<p>
+    <p>
     Represents a <a href="https://developers.google.com/actions/smarthome/guides/light">Google Home light</a>. Outputs
     a message when Google Home changes the state of the light and updates the
     state of the light in Google Home on input messages.

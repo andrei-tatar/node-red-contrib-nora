@@ -59,6 +59,9 @@ module.exports = function (RED) {
         });
 
         this.on('input', msg => {
+            if (config.passthru) {
+                this.send(msg);
+            }
             const myOnValue = getValue(RED, this, onValue, onType);
             const myOffValue = getValue(RED, this, offValue, offType);
             if (RED.util.compareObjects(myOnValue, msg.payload)) {

@@ -14,6 +14,9 @@
             name: {
                 value: ''
             },
+            passthru: {
+                value: false,
+            },
             nora: {
                 type: 'nora-config',
                 required: true
@@ -26,8 +29,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'onvalueType') : function (v) {
-                        return true
-                    })
+                    return true
+                })
             },
             onvalueType: {
                 value: 'bool'
@@ -37,8 +40,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'offvalueType') : function (v) {
-                        return true
-                    })
+                    return true
+                })
             },
             offvalueType: {
                 value: 'bool'
@@ -75,6 +78,10 @@
         <input type="text" id="node-input-devicename">
     </div>
     <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
+        <input type="checkbox" checked id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
         <label for="node-input-onvalue" style="padding-left:25px; margin-right:-25px">On Payload</label>
         <input type="text" id="node-input-onvalue" style="width:70%">
         <input type="hidden" id="node-input-onvalueType">
@@ -99,7 +106,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="nora-switch">
-<p>
+    <p>
     Represents a <a href="https://developers.google.com/actions/smarthome/guides/switch">Google Home switch</a>.
     Outputs a message when Google Home changes the state of the switch and updates the
     state of the switch in Google Home on input messages.

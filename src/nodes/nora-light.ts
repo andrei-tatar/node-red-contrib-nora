@@ -120,6 +120,9 @@ module.exports = function (RED) {
         });
 
         this.on('input', msg => {
+            if (config.passthru) {
+                this.send(msg);
+            }
             if (!brightnessControl) {
                 const myOnValue = getValue(RED, this, onValue, onType);
                 const myOffValue = getValue(RED, this, offValue, offType);
