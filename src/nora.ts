@@ -90,7 +90,8 @@ export class NoraService {
         const id = token.substr(-5);
         return new Observable<NoraConnection>(observer => {
             this.logger.info(`nora (${id}): connecting`);
-            let uri = `https://node-red-google-home.herokuapp.com/?token=${encodeURIComponent(token)}`;
+            const version = require('../package.json').version;
+            let uri = `https://node-red-google-home.herokuapp.com/?version=${version}&token=${encodeURIComponent(token)}`;
             if (group) {
                 uri += `&group=${encodeURIComponent(group)}`;
             }
