@@ -1,7 +1,7 @@
-import { combineLatest, EMPTY, merge, Observable, Subject } from 'rxjs';
+import { combineLatest, EMPTY, merge, Observable, Subject, timer } from 'rxjs';
 import {
-    delay, distinctUntilChanged, finalize, ignoreElements, publishReplay,
-    refCount, retryWhen, startWith, switchMap, takeUntil, tap
+    delay, delayWhen, distinctUntilChanged, finalize, ignoreElements,
+    publishReplay, refCount, retryWhen, startWith, switchMap, takeUntil, tap
 } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 import { Logger } from './logger';
@@ -112,7 +112,13 @@ export class NoraService {
                 socket.close();
             };
         }).pipe(
-            retryWhen(err => err.pipe(delay(10000))),
+            retryWhen(err => err.pipe(
+                delayWhen(() => {
+                    const seconds = Math.round(Math.random() * 120) / 2 + 5;
+                    this.logger.warn(`nora (${id}): reconnecting in ${seconds} sec`);
+                    return timer(seconds * 1000);
+                })
+            )),
             takeUntil(stop),
             publishReplay(1),
             refCount(),
