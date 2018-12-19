@@ -8,6 +8,7 @@ interface ThermostatState {
     thermostatMode: string;
     thermostatTemperatureAmbient: number;
     thermostatTemperatureSetpoint: number;
+    thermostatHumidityAmbient?: number;
 }
 
 module.exports = function (RED) {
@@ -20,9 +21,9 @@ module.exports = function (RED) {
         const close$ = new Subject();
         const state$ = new BehaviorSubject<ThermostatState>({
             online: true,
-            thermostatMode: 'auto',
-            thermostatTemperatureAmbient: 21,
-            thermostatTemperatureSetpoint: 23,
+            thermostatMode: 'off',
+            thermostatTemperatureAmbient: 0,
+            thermostatTemperatureSetpoint: 0,
         });
         const stateString$ = new Subject<string>();
 
