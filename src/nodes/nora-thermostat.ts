@@ -26,6 +26,7 @@ module.exports = function (RED) {
             thermostatTemperatureSetpoint: 0,
         });
         const stateString$ = new Subject<string>();
+        const availableModes: string[] = config.modes.split(',');
 
         const device$ = NoraService
             .getService(RED)
@@ -35,8 +36,8 @@ module.exports = function (RED) {
                     type: 'thermostat',
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
-                    availableModes: config.modes.split(','),
-                    temperatureUnit: 'C',
+                    availableModes,
+                    temperatureUnit: config.unit,
                     state: state$.value,
                 })),
                 publishReplay(1),
@@ -63,13 +64,49 @@ module.exports = function (RED) {
         ).subscribe(state => {
             notifyState(state);
             this.send({
-                payload: { ...state },
+                payload: {
+                    mode: state.thermostatMode,
+                    setpoint: state.thermostatTemperatureSetpoint,
+                },
+                topic: config.topic,
             });
         });
 
         this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
+            }
+
+            const payload = msg.payload;
+            if (typeof payload !== 'object') { return; }
+
+            const update: Partial<ThermostatState> = {};
+
+            let mode = payload.mode;
+            if (typeof mode === 'string') {
+                mode = mode.toLowerCase().trim();
+                if (availableModes.indexOf(mode) >= 0) {
+                    update.thermostatMode = mode;
+                }
+            }
+
+            const setpoint = parseFloat(payload.setpoint);
+            if (!isNaN(setpoint) && isFinite(setpoint)) {
+                update.thermostatTemperatureSetpoint = setpoint;
+            }
+
+            const temperature = parseFloat(payload.temperature);
+            if (!isNaN(temperature) && isFinite(temperature)) {
+                update.thermostatTemperatureAmbient = temperature;
+            }
+
+            const humidity = parseFloat(payload.humidity);
+            if (!isNaN(humidity) && isFinite(humidity)) {
+                update.thermostatHumidityAmbient = humidity;
+            }
+
+            if (Object.keys(update).length) {
+                state$.next({ ...state$.value, ...update });
             }
         });
 
@@ -79,7 +116,7 @@ module.exports = function (RED) {
         });
 
         function notifyState(state: ThermostatState) {
-            stateString$.next(`(${state.thermostatMode}:${state.thermostatTemperatureAmbient}/${state.thermostatTemperatureSetpoint})`);
+            stateString$.next(`(${state.thermostatMode}/T:${state.thermostatTemperatureAmbient}/S:${state.thermostatTemperatureSetpoint})`);
         }
     });
 };

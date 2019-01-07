@@ -17,6 +17,12 @@
             modes: {
                 value: 'off',
             },
+            unit: {
+                value: 'C',
+            },
+            topic: {
+                value: ''
+            },
             passthru: {
                 value: false,
             },
@@ -52,6 +58,11 @@
                     '</div>'
                 );
             });
+            if ((this.unit || 'C') === 'C') {
+                $('#unit-celsius').prop('checked', true);
+            } else {
+                $('#unit-fahrenheit').prop('checked', true);
+            }
         },
         oneditsave: function () {
             var modes = [];
@@ -59,6 +70,7 @@
                 modes.push($(this).attr('data-mode'));
             });
             this.modes = modes.join(',');
+            this.unit = $('#unit-celsius').prop('checked') ? 'C' : 'F';
         },
     });
 </script>
@@ -90,6 +102,11 @@
         <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
         <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
+    <div class="form-row">
+        <label style="width:auto"><i class="fa fa-thermometer-half"></i> Temperature Unit: </label>
+        <input style="width:auto;margin:0" id="unit-celsius" type="radio" name="unit" value="C"><label style="width:40px" for="unit-celsius">&nbsp;C</label>
+        <input style="width:auto;margin:0" id="unit-fahrenheit" type="radio" name="unit" value="F"><label  style="width:40px" for="unit-fahrenheit">&nbsp;F</label>
+    </div>
     <div class="form-row d-flex flex-column">
         <label style="width:100%"><i class="fa fa-cog"></i> Supported modes</label>
         <div id="modes-container"></div>
@@ -97,6 +114,10 @@
     <div class="form-row">
         <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
         <input type="text" id="node-input-roomhint">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic" style="padding-left:25px; margin-right:-25px">Topic</label>
+        <input type="text" id="node-input-topic">
     </div>
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
@@ -107,6 +128,20 @@
 <script type="text/x-red" data-help-name="nora-thermostat">
     <p>
     Represents a <a href="https://developers.google.com/actions/smarthome/guides/thermostat">Google Home Thermostat</a>.
+    <br>
+    Input payload can have one or more be of the following properties
+    <code>
+        <strong>mode</strong> - string. Thermostat mode, one from the selected available modes;<br>
+        <strong>setpoint</strong> - number. Setpoint temperature in degrees celsius;<br>
+        <strong>temperature</strong> - number. Ambient temperature in degrees celsius;<br>
+        <strong>humidity</strong> - number. Ambient relative humidity (0 - 100);<br>
+    </code>
+    Output payload has the properties that can be changed from Google Home:
+    <code>
+        <strong>mode</strong> - string. Thermostat mode. 'on' should set the thermostat to one of the previous working modes (heat/cool).<br>
+        <strong>setpoint</strong> - number. Setpoint temperature in degrees celsius;<br>
+    </code>
+    <br>
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
 </p>
 </script>
