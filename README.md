@@ -9,9 +9,11 @@ node-red-contrib-nora
 
 This module provides a set of nodes in Node-RED for Google smart home Action integration via [NORA](https://node-red-google-home.herokuapp.com/).
 
-## In Testing
+## ~~In Testing~~
 
-In order to be able to link NORA to your Google Home, send me a PM on [Node-RED Forum](https://discourse.nodered.org/u/andrei-tatar/summary) with the gmail address you use with your Google Home and I will add it to the "Testers" list.
+~~In order to be able to link NORA to your Google Home, send me a PM on [Node-RED Forum](https://discourse.nodered.org/u/andrei-tatar/summary) with the gmail address you use with your Google Home and I will add it to the "Testers" list.~~
+
+Publicly available and free of charge. If a very big number of active users is exceeded (more than 2K...) I may need to charge or block access. Also, if you like NORA and find it useful or you simply want to support the development and adding new features, **consider donating using [Paypal Me](https://paypal.me/andreitatar)**.
 
 ## Forum
 
@@ -63,10 +65,8 @@ Once you have at least one NORA device you can link your Google Home to NORA
 
 <img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/doc/8_ghome_setup.png" width=300>
 
-4. Select `[test] NORA` (in this image it's already linked) and login again with the Google/Github account you used when logging in to the NORA homepage.
+4. Select `NORA` (in this image it's already linked) and login again with the Google/Github account you used when logging in to the NORA homepage.
 
 <img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/doc/9_ghome_manage.jpeg" width=300>
 
 The devices setup in Node-RED will sync with your Google Home and now you are able to control them via voice/routines/etc.
-
-*If you like NORA and find it useful, consider donating using [Paypal Me](https://paypal.me/andreitatar)*
