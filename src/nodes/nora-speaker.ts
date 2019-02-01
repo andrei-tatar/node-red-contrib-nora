@@ -17,6 +17,7 @@ module.exports = function (RED) {
         const noraConfig = RED.nodes.getNode(config.nora);
         if (!noraConfig || !noraConfig.token) { return; }
 
+        const step = Math.max(1, Math.min(50, (isFinite(config.step) ? config.step : 5) || 5));
         const close$ = new Subject();
         const state$ = new BehaviorSubject<SpeakerState>({
             on: true,
@@ -35,6 +36,7 @@ module.exports = function (RED) {
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
                     state: state$.value,
+                    relativeVolumeStep: step,
                 })),
                 publishReplay(1),
                 refCount(),
@@ -69,6 +71,9 @@ module.exports = function (RED) {
         });
 
         this.on('input', msg => {
+            if (config.passthru) {
+                this.send(msg);
+            }
             const update: Partial<SpeakerState> = {};
             if (typeof msg === 'object' && typeof msg.payload === 'object') {
                 const payload = msg.payload;

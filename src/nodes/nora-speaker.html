@@ -17,6 +17,12 @@
             passthru: {
                 value: false,
             },
+            step: {
+                value: 5,
+                validate: function (v) {
+                    return RED.validators.number()(v) && v >= 1 && v <= 50;
+                },
+            },
             nora: {
                 type: 'nora-config',
                 required: true
@@ -42,6 +48,10 @@
     <div class="form-row">
         <label for="node-input-devicename"><i class="fa fa-i-cursor"></i> Speaker</label>
         <input type="text" id="node-input-devicename">
+    </div>
+    <div class="form-row">
+        <label for="node-input-step"><i class="fa fa-i-cursor"></i> Volume step</label>
+        <input type="text" id="node-input-step">
     </div>
     <div class="form-row">
         <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
