@@ -20,9 +20,9 @@ module.exports = function (RED) {
         const step = Math.max(1, Math.min(50, (isFinite(config.step) ? config.step : 5) || 5));
         const close$ = new Subject();
         const state$ = new BehaviorSubject<SpeakerState>({
-            on: true,
+            on: false,
             online: true,
-            currentVolume: 30,
+            currentVolume: 50,
             isMuted: false,
         });
         const stateString$ = new Subject<string>();
