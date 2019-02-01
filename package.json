@@ -39,6 +39,7 @@
     "nodes": {
       "nora-config": "build/nodes/nora-config.js",
       "nora-scene": "build/nodes/nora-scene.js",
+      "nora-speaker": "build/nodes/nora-speaker.js",
       "nora-switch": "build/nodes/nora-switch.js",
       "nora-thermostat": "build/nodes/nora-thermostat.js",
       "nora-outlet": "build/nodes/nora-outlet.js",
