@@ -114,7 +114,8 @@ export class NoraService {
         }).pipe(
             retryWhen(err => err.pipe(
                 delayWhen(() => {
-                    const seconds = Math.round(Math.random() * 120) / 2 + 5;
+                    const spreadAcrossSeconds = 3 * 60;
+                    const seconds = Math.round(Math.random() * spreadAcrossSeconds * 4) / 4 + 5;
                     this.logger.warn(`nora (${id}): reconnecting in ${seconds} sec`);
                     return timer(seconds * 1000);
                 })

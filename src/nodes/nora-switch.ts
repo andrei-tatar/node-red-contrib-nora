@@ -27,7 +27,7 @@ module.exports = function (RED) {
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
                     state: { online: true, on: on$.value },
-                })),
+                }, RED.nodes.getNode(config.confirm))),
                 publishReplay(1),
                 refCount(),
                 takeUntil(close$),

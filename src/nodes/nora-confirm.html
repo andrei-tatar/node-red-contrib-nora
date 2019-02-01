@@ -1,0 +1,48 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nora-confirm', {
+        category: 'config',
+        defaults: {
+            name: {
+                value: 'nora confirm'
+            },
+            requireack: {
+                value: false,
+            },
+            requirepin: {
+                value: false,
+            },
+        },
+        credentials: {
+            pin: {
+                type: 'text'
+            },
+        },
+        paletteLabel: 'nora confirm',
+        label: function () {
+            return this.name || 'nora confirm';
+        },
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nora-confirm">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-config-input-requireack"><i class="fa fa-check"></i> Require confirmation for commands: </label>
+        <input type="checkbox" id="node-config-input-requireack" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-config-input-requirepin"><i class="fa fa-lock"></i> Require pin for commands: </label>
+        <input type="checkbox" id="node-config-input-requirepin" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-pin"><i class="fa fa-key"></i> Pin</label>
+        <input type="text" id="node-config-input-pin">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nora-confirm">
+    <p>NORA two factor confirmation node. By default no confirmation is needed.</p>
+</script>

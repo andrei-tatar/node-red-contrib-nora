@@ -26,7 +26,7 @@ module.exports = function (RED) {
                     roomHint: config.roomhint || undefined,
                     sceneReversible: !!config.scenereversible,
                     state: { online: true },
-                })),
+                }, RED.nodes.getNode(config.confirm))),
                 switchMap(device => device.activateScene$),
                 takeUntil(close$),
             ).subscribe(({ deactivate }) => {

@@ -39,7 +39,7 @@ module.exports = function (RED) {
                     availableModes,
                     temperatureUnit: config.unit,
                     state: state$.value,
-                })),
+                }, RED.nodes.getNode(config.confirm))),
                 publishReplay(1),
                 refCount(),
                 takeUntil(close$),

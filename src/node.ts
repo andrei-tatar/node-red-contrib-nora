@@ -15,3 +15,9 @@ export interface ConfigNode {
     token: string;
     group: string;
 }
+
+export interface ConfirmNode {
+    pin: string;
+    requireAck: boolean;
+    requirePin: boolean;
+}

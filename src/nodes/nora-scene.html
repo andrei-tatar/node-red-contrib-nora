@@ -21,6 +21,10 @@
                 type: 'nora-config',
                 required: true
             },
+            confirm: {
+                type: 'nora-confirm',
+                required: false
+            },
             topic: {
                 value: ''
             },
@@ -29,8 +33,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'onvalueType') : function (v) {
-                        return true
-                    })
+                    return true
+                })
             },
             onvalueType: {
                 value: 'bool'
@@ -40,8 +44,8 @@
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
                     'offvalueType') : function (v) {
-                        return true
-                    })
+                    return true
+                })
             },
             offvalueType: {
                 value: 'bool'
@@ -107,13 +111,17 @@
         <input type="text" id="node-input-topic">
     </div>
     <div class="form-row">
+        <label for="node-input-confirm"><i class="fa fa-check"></i> Two factor</label>
+        <input type="text" id="node-input-confirm">
+    </div>
+    <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name">
     </div>
 </script>
 
 <script type="text/x-red" data-help-name="nora-scene">
-<p>
+    <p>
     Represents a <a href="https://developers.google.com/actions/smarthome/traits/scene">Google Home scene</a>.
     <br>
     Outputs the <strong>Activate</strong> message when Google Home activates the scene. If <strong>Scene reversible</strong>

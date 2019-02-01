@@ -4,6 +4,7 @@ import {
     scan, switchMap, takeUntil, withLatestFrom
 } from 'rxjs/operators';
 import { Logger } from './logger';
+import { ConfirmNode } from './node';
 import { NoraDevice } from './nora-device';
 
 export class NoraConnection {
@@ -92,8 +93,18 @@ export class NoraConnection {
         socket.on('activate-scene', (ids: string[], deactivate: boolean) => activate$.next({ ids, deactivate }));
     }
 
-    addDevice(id: string, deviceConfig) {
+    addDevice(id: string, deviceConfig, confirm?: ConfirmNode) {
         return new Observable<NoraDevice>(observer => {
+
+            if (confirm) {
+                if (confirm.requirePin) {
+                    deviceConfig.twoFactor = 'pin';
+                    deviceConfig.pin = confirm.pin;
+                } else if (confirm.requireAck) {
+                    deviceConfig.twoFactor = 'ack';
+                }
+            }
+
             const device = new NoraDevice(id, deviceConfig, this);
 
             this.deviceEvents$.next({

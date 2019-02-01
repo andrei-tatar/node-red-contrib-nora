@@ -63,7 +63,7 @@ module.exports = function (RED) {
                         online: true,
                         ...state$.value,
                     },
-                })),
+                }, RED.nodes.getNode(config.confirm))),
                 publishReplay(1),
                 refCount(),
                 takeUntil(close$),

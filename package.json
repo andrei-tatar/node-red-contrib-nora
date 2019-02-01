@@ -38,6 +38,7 @@
     "version": ">=0.14.0",
     "nodes": {
       "nora-config": "build/nodes/nora-config.js",
+      "nora-confirm": "build/nodes/nora-confirm.js",
       "nora-scene": "build/nodes/nora-scene.js",
       "nora-speaker": "build/nodes/nora-speaker.js",
       "nora-switch": "build/nodes/nora-switch.js",
