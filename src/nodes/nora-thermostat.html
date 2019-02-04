@@ -38,7 +38,7 @@
             return this.name || this.devicename || 'thermostat';
         },
         oneditprepare: function () {
-            var availableModes = ['off', 'heat', 'cool', 'on', 'auto', 'fan-only', 'purifier', 'eco', 'dry'];
+            var availableModes = ['off', 'heat', 'cool', 'heatcool', 'on', 'auto', 'fan-only', 'purifier', 'eco', 'dry'];
             var row;
             var modes = this.modes.split(',');
             availableModes.forEach(function (mode, index) {
@@ -132,14 +132,18 @@
     Input payload can have one or more be of the following properties
     <code>
         <strong>mode</strong> - string. Thermostat mode, one from the selected available modes;<br>
-        <strong>setpoint</strong> - number. Setpoint temperature in degrees celsius;<br>
+        <strong>setpoint</strong> - number. Setpoint temperature in degrees celsius; (if mode is not 'heatcool')<br>
+        <strong>setpointLow</strong> - number. Setpoint low temperature in degrees celsius; (if mode is 'heatcool')<br>
+        <strong>setpointHigh</strong> - number. Setpoint high temperature in degrees celsius; (if mode is 'heatcool')<br>
         <strong>temperature</strong> - number. Ambient temperature in degrees celsius;<br>
         <strong>humidity</strong> - number. Ambient relative humidity (0 - 100);<br>
     </code>
     Output payload has the properties that can be changed from Google Home:
     <code>
         <strong>mode</strong> - string. Thermostat mode. 'on' should set the thermostat to one of the previous working modes (heat/cool).<br>
-        <strong>setpoint</strong> - number. Setpoint temperature in degrees celsius;<br>
+        <strong>setpoint</strong> - number. Setpoint temperature in degrees celsius; (if mode is not 'heatcool')<br>
+        <strong>setpointLow</strong> - number. Setpoint temperature in degrees celsius; (if mode is 'heatcool')<br>
+        <strong>setpointHigh</strong> - number. Setpoint temperature in degrees celsius; (if mode is 'heatcool')<br>
     </code>
     <br>
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.

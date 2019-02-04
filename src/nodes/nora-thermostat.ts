@@ -6,9 +6,11 @@ import { NoraService } from '../nora';
 interface ThermostatState {
     online: boolean;
     thermostatMode: string;
+    thermostatHumidityAmbient?: number;
     thermostatTemperatureAmbient: number;
     thermostatTemperatureSetpoint: number;
-    thermostatHumidityAmbient?: number;
+    thermostatTemperatureSetpointLow: number;
+    thermostatTemperatureSetpointHigh: number;
 }
 
 module.exports = function (RED) {
@@ -22,8 +24,10 @@ module.exports = function (RED) {
         const state$ = new BehaviorSubject<ThermostatState>({
             online: true,
             thermostatMode: 'off',
-            thermostatTemperatureAmbient: 0,
-            thermostatTemperatureSetpoint: 0,
+            thermostatTemperatureAmbient: 25,
+            thermostatTemperatureSetpoint: 20,
+            thermostatTemperatureSetpointLow: 20,
+            thermostatTemperatureSetpointHigh: 30,
         });
         const stateString$ = new Subject<string>();
         const availableModes: string[] = config.modes.split(',');
@@ -67,6 +71,8 @@ module.exports = function (RED) {
                 payload: {
                     mode: state.thermostatMode,
                     setpoint: state.thermostatTemperatureSetpoint,
+                    setpointLow: state.thermostatTemperatureSetpointLow,
+                    setpointHigh: state.thermostatTemperatureSetpointHigh,
                 },
                 topic: config.topic,
             });
@@ -90,20 +96,11 @@ module.exports = function (RED) {
                 }
             }
 
-            const setpoint = parseFloat(payload.setpoint);
-            if (!isNaN(setpoint) && isFinite(setpoint)) {
-                update.thermostatTemperatureSetpoint = setpoint;
-            }
-
-            const temperature = parseFloat(payload.temperature);
-            if (!isNaN(temperature) && isFinite(temperature)) {
-                update.thermostatTemperatureAmbient = temperature;
-            }
-
-            const humidity = parseFloat(payload.humidity);
-            if (!isNaN(humidity) && isFinite(humidity)) {
-                update.thermostatHumidityAmbient = humidity;
-            }
+            getNumberAndUpdate(payload, 'setpoint', update, 'thermostatTemperatureSetpoint');
+            getNumberAndUpdate(payload, 'setpointHigh', update, 'thermostatTemperatureSetpointHigh');
+            getNumberAndUpdate(payload, 'setpointLow', update, 'thermostatTemperatureSetpointLow');
+            getNumberAndUpdate(payload, 'temperature', update, 'thermostatTemperatureAmbient');
+            getNumberAndUpdate(payload, 'humidity', update, 'thermostatHumidityAmbient');
 
             if (Object.keys(update).length) {
                 state$.next({ ...state$.value, ...update });
@@ -117,6 +114,13 @@ module.exports = function (RED) {
 
         function notifyState(state: ThermostatState) {
             stateString$.next(`(${state.thermostatMode}/T:${state.thermostatTemperatureAmbient}/S:${state.thermostatTemperatureSetpoint})`);
+        }
+
+        function getNumberAndUpdate<T>(payload: any, propName: string, update: T, targetPropName: keyof T) {
+            const value = parseFloat(payload[propName]);
+            if (!isNaN(value) && isFinite(value)) {
+                update[targetPropName] = value as any;
+            }
         }
     });
 };
