@@ -26,6 +26,7 @@ Publicly available and free of charge. If a very big number of active users is e
 | speaker    | on/off, volume                |
 | switch     | on/off                        |
 | thermostat | thermostat                    |
+| blinds     | open/close                    |
 
 
 ## Forum
