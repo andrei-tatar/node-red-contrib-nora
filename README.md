@@ -15,6 +15,19 @@ This module provides a set of nodes in Node-RED for Google smart home Action int
 
 Publicly available and free of charge. If a very big number of active users is exceeded (more than 2K...) I may need to charge or block access. Also, if you like NORA and find it useful or you simply want to support the development and adding new features, **consider donating using [Paypal Me](https://paypal.me/andreitatar)**.
 
+## Supported nodes with devices/traits:
+
+
+| Type       | Traits                        |
+|------------|-------------------------------|
+| light      | on/off, [brightness], [color] |
+| outlet     | on/off                        |
+| scene      | scene                         |
+| speaker    | on/off, volume                |
+| switch     | on/off                        |
+| thermostat | thermostat                    |
+
+
 ## Forum
 
 For feedback, you can join the Node-RED topic opened for this project on the Node-RED forum: [Node-RED google home integration](https://discourse.nodered.org/t/node-red-google-home-integration/4829)

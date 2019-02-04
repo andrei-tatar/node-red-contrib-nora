@@ -72,4 +72,20 @@
 </script>
 
 <script type="text/x-red" data-help-name="nora-speaker">
+<p>
+    <strong>Experimental!</strong> Represents a <a href="https://github.com/actions-on-google/smart-home-nodejs/issues/253">Google Home Speaker</a>.
+    <br>
+    Input payload can have one or more be of the following properties
+    <code>
+        <strong>on</strong> - boolean. Speaker on or off state.<br>
+        <strong>volume</strong> - number (0-100). represents the current volume of the speaker;<br>
+    </code>
+    Output payload has the properties that can be changed from Google Home:
+    <code>
+        <strong>on</strong> - boolean. Speaker on or off state.<br>
+        <strong>volume</strong> - number (0-100). represents the current volume of the speaker;<br>
+    </code>
+    <br>
+    <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
+</p>
 </script>
