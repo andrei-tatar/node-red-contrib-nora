@@ -37,6 +37,7 @@
   "node-red": {
     "version": ">=0.14.0",
     "nodes": {
+      "nora-blinds": "build/nodes/nora-blinds.js",
       "nora-config": "build/nodes/nora-config.js",
       "nora-scene": "build/nodes/nora-scene.js",
       "nora-speaker": "build/nodes/nora-speaker.js",
