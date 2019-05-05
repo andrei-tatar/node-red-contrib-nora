@@ -8,6 +8,9 @@
             group: {
                 value: '',
             },
+            notify: {
+                value: false,
+            },
         },
         credentials: {
             token: { type: 'text' },
@@ -31,6 +34,10 @@
     <div class="form-row">
         <label for="node-config-input-group"><i class="fa fa-object-group"></i> Group</label>
         <input type="text" id="node-config-input-group">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-config-input-notify"><i class="fa fa-arrow-right"></i> Send <code>msg</code> if state doesn't change after command: </label>
+        <input type="checkbox" id="node-config-input-notify" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
 </script>
 

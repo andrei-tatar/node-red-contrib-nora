@@ -14,4 +14,5 @@ export interface NodeInterface {
 export interface ConfigNode {
     token: string;
     group: string;
+    notify: boolean;
 }

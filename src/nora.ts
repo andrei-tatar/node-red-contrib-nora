@@ -33,13 +33,13 @@ export class NoraService {
         return this.instance;
     }
 
-    getConnection({ token, group }: ConfigNode, node, state: Observable<string> = EMPTY) {
-        const key = `${group || ''}:${token}`;
+    getConnection(config: ConfigNode, node, state: Observable<string> = EMPTY) {
+        const key = `${config.group || ''}:${config.token}`;
         let existing = this.sockets[key];
         if (!existing) {
             const stop = new Subject();
             this.sockets[key] = existing = {
-                connection$: this.createSocketObservable(token, group, stop),
+                connection$: this.createSocketObservable(config, stop),
                 uses: 0,
                 stop,
             };
@@ -86,12 +86,12 @@ export class NoraService {
         });
     }
 
-    private createSocketObservable(token: string, group: string, stop: Observable<any>) {
+    private createSocketObservable({ token, group, notify }: ConfigNode, stop: Observable<any>) {
         const id = token.substr(-5);
         return new Observable<NoraConnection>(observer => {
             this.logger.info(`nora (${id}): connecting`);
             const version = require('../package.json').version;
-            let uri = `https://node-red-google-home.herokuapp.com/?version=${version}&token=${encodeURIComponent(token)}`;
+            let uri = `https://node-red-google-home.herokuapp.com/?version=${version}&token=${encodeURIComponent(token)}&notify=${notify}`;
             if (group) {
                 uri += `&group=${encodeURIComponent(group)}`;
             }

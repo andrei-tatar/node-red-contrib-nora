@@ -6,6 +6,7 @@ module.exports = function (RED) {
             RED.nodes.createNode(this, config);
             this.token = this.credentials && this.credentials.token;
             this.group = (config.group || '').trim();
+            this.notify = !!config.notify;
         },
         {
             credentials: {
