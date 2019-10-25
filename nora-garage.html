@@ -1,0 +1,79 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nora-garage', {
+        category: 'nora',
+        color: 'rgb(153, 204, 255)',
+        icon: 'assistant.png',
+        defaults: {
+            devicename: {
+                value: 'Garage Door',
+                required: true,
+            },
+            roomhint: {
+                value: ''
+            },
+            name: {
+                value: ''
+            },
+            passthru: {
+                value: false,
+            },
+            nora: {
+                type: 'nora-config',
+                required: true
+            },
+            topic: {
+                value: ''
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        paletteLabel: 'garage',
+        label: function () {
+            return this.name || this.devicename || 'garage';
+        },
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nora-garage">
+    <div class="form-row">
+        <label for="node-input-nora"><i class="fa fa-table"></i> Config</label>
+        <input type="text" id="node-input-nora">
+    </div>
+    <div class="form-row">
+        <label for="node-input-devicename"><i class="fa fa-i-cursor"></i> Garage Door</label>
+        <input type="text" id="node-input-devicename">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
+        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
+        <input type="text" id="node-input-roomhint">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic" style="padding-left:25px; margin-right:-25px">Topic</label>
+        <input type="text" id="node-input-topic">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nora-garage">
+<p>
+    <strong>Experimental!</strong> Represents a <a href="https://github.com/actions-on-google/smart-home-nodejs/issues/253">Google Home Garage Door</a>.
+    <br>
+    Input payload can have one or more be of the following properties
+    <code>
+        <strong>openPercent</strong> - number (0-100). represents how open the garage are;<br>
+    </code>
+    Output payload has the properties that can be changed from Google Home:
+    <code>
+        <strong>openPercent</strong> - number (0-100). represents how open the garage are;<br>
+    </code>
+    <br>
+    <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
+</p>
+</script>
