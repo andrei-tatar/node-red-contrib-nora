@@ -3,7 +3,7 @@ import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/o
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
 
-interface DoorState {
+interface GarageState {
     online: boolean;
     openPercent: number;
 }
