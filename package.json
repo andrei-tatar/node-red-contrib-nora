@@ -44,7 +44,7 @@
       "nora-switch": "build/nodes/nora-switch.js",
       "nora-thermostat": "build/nodes/nora-thermostat.js",
       "nora-outlet": "build/nodes/nora-outlet.js",
-      "nora-light": "build/nodes/nora-light.js"
+      "nora-light": "build/nodes/nora-light.js",
 	  "nora-garage": "build/nodes/nora-garage.js"
     }
   }
