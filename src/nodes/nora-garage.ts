@@ -60,12 +60,12 @@ module.exports = function (RED) {
             notifyState(state);
 			if(state.openPercent == 0) {
 				this.send({
-                    payload: getValue(RED, value ? closeValue, value ? closeType),
+                    payload: getValue(RED, closeValue, closeType),
                     topic: config.topic
                 });
 			} else {
 				this.send({
-                    payload: getValue(RED, value ? onValue : offValue, value ? onType : offType),
+                    payload: getValue(RED, openValue, openType),
                     topic: config.topic
                 });
 			}
