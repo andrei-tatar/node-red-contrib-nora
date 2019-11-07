@@ -94,9 +94,9 @@ module.exports = function (RED) {
 
         function notifyState(state: GarageState) {
 				if(state.openPercent == 0) {
-					stateString$.next(`closed`);
+					stateString$.next(`(closed)`);
                 } else {
-					stateString$.next(`open`);
+					stateString$.next(`(open)`);
 				}
 		}
     });
