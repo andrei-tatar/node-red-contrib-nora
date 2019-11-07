@@ -22,6 +22,9 @@ module.exports = function (RED) {
         });
         const stateString$ = new Subject<string>();
 
+        const { value: openValue, type: openType } = convertValueType(RED, config.openvalue, config.openvalueType, { defaultValue: true });
+        const { value: closeValue, type: closeType } = convertValueType(RED, config.closevalue, config.closevalueType, { defaultValue: false });
+		
         const device$ = NoraService
             .getService(RED)
             .getConnection(noraConfig, this, stateString$)
@@ -55,24 +58,29 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(state => {
             notifyState(state);
-            this.send({
-                payload: { openPercent: state.openPercent },
-                topic: config.topic
-            });
+			if(state.openPercent == 0) {
+				this.send({
+                    payload: getValue(RED, value ? closeValue, value ? closeType),
+                    topic: config.topic
+                });
+			} else {
+				this.send({
+                    payload: getValue(RED, value ? onValue : offValue, value ? onType : offType),
+                    topic: config.topic
+                });
+			}
         });
 
         this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
             }
-            if (typeof msg === 'object' && typeof msg.payload === 'object') {
-                const payload = msg.payload;
-                if ('openPercent' in payload && typeof payload.openPercent === 'number' && isFinite(payload.openPercent)) {
-                    state$.next({
-                        ...state$.value,
-                        openPercent: Math.floor(Math.max(0, Math.min(100, payload.openPercent))),
-                    });
-                }
+			const myOpenValue = getValue(RED, this, openValue, openType);
+            const myCloseValue = getValue(RED, this, closeValue, closeType);
+            if (RED.util.compareObjects(myOpenValue, msg.payload)) {
+                state$.next({ ...state$.value, openPercent: 100 });
+            } else if (RED.util.compareObjects(myCloseValue, msg.payload)) {
+                state$.next({ ...state$.value, openPercent: 0 });
             }
         });
 
