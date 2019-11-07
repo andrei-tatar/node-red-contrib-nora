@@ -19,7 +19,7 @@ module.exports = function (RED) {
         const close$ = new Subject();
         const state$ = new BehaviorSubject<GarageState>({
             online: true,
-            openPercent: 100,
+            openPercent: 0,
         });
         const stateString$ = new Subject<string>();
 
@@ -66,7 +66,8 @@ module.exports = function (RED) {
                 });
 			} else {
 				this.send({
-                    payload: getValue(RED, this, openValue, openType),
+ //                   payload: getValue(RED, this, openValue, openType),
+                    payload: getValue(RED, this, value ? onValue : offValue, value ? onType : offType),
                     topic: config.topic
                 });
 			}
