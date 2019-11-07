@@ -61,7 +61,8 @@ module.exports = function (RED) {
             notifyState(state);
 			if(state.openPercent == 0) {
 				this.send({
-                    payload: getValue(RED, this, closeValue, closeType),
+//                    payload: getValue(RED, this, closeValue, closeType),
+					payload: openValue,
                     topic: config.topic
                 });
 			} else {
