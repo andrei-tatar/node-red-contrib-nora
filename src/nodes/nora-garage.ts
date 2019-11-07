@@ -67,7 +67,7 @@ module.exports = function (RED) {
 			} else {
 				this.send({
 //                   payload: getValue(RED, this, openValue, openType),
-					payload: "Test",
+					payload: openValue,
                     topic: config.topic
                 });
 			}
