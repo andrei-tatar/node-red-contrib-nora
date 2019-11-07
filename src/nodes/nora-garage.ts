@@ -2,6 +2,7 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
+import { convertValueType, getValue } from './util';
 
 interface GarageState {
     online: boolean;
