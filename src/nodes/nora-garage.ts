@@ -66,8 +66,8 @@ module.exports = function (RED) {
                 });
 			} else {
 				this.send({
- //                   payload: getValue(RED, this, openValue, openType),
-                    payload: getValue(RED, this, value ? openValue : closeValue, value ? openType : closeType),
+//                   payload: getValue(RED, this, openValue, openType),
+					payload: "Test",
                     topic: config.topic
                 });
 			}
