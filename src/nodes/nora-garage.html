@@ -24,12 +24,46 @@
             topic: {
                 value: ''
             },
+			 openvalue: {
+                value: true,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'openvalueType') : function (v) {
+                    return true
+                })
+            },
+            openvalueType: {
+                value: 'bool'
+            },
+            closedvalue: {
+                value: false,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'closevalueType') : function (v) {
+                    return true
+                })
+            },
+            closevalueType: {
+                value: 'bool'
+            },
         },
         inputs: 1,
         outputs: 1,
         paletteLabel: 'garage',
         label: function () {
             return this.name || this.devicename || 'garage';
+        },
+		oneditprepare: function () {
+            $('#node-input-openvalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-openvalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
+            $('#node-input-closevalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-closevalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
         },
     });
 </script>
@@ -48,6 +82,16 @@
         <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
     <div class="form-row">
+        <label for="node-input-openvalue" style="padding-left:25px; margin-right:-25px">Open Payload</label>
+        <input type="text" id="node-input-openvalue" style="width:70%">
+        <input type="hidden" id="node-input-openvalueType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-closevalue" style="padding-left:25px; margin-right:-25px">Close Payload</label>
+        <input type="text" id="node-input-closevalue" style="width:70%">
+        <input type="hidden" id="node-input-closevalueType">
+    </div>
+    <div class="form-row">
         <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
         <input type="text" id="node-input-roomhint">
     </div>
@@ -63,16 +107,13 @@
 
 <script type="text/x-red" data-help-name="nora-garage">
 <p>
-    <strong>Experimental!</strong> Represents a <a href="https://github.com/actions-on-google/smart-home-nodejs/issues/253">Google Home Garage Door</a>.
+    Represents a <a href="https://developers.google.com/assistant/smarthome/guides/garage.html">Google Home Garage Door</a>.
     <br>
-    Input payload can have one or more be of the following properties
-    <code>
-        <strong>openPercent</strong> - number (0-100). represents how open the garage are;<br>
-    </code>
-    Output payload has the properties that can be changed from Google Home:
-    <code>
-        <strong>openPercent</strong> - number (0-100). represents how open the garage are;<br>
-    </code>
+    Outputs a message when Google Home changes the state of the garage door and updates the
+    state of the garage door in Google Home on input messages.
+    <br>
+    The Open/Close payload specifies what message should be sent for the different states of the garage door and how incoming
+    messages translate to the state of the garage door.
     <br>
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
 </p>
