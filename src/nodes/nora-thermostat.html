@@ -19,12 +19,25 @@
             },
             unit: {
                 value: 'C',
+                validate: function (v) {return v === 'C' || v === 'F';},
             },
             topic: {
                 value: ''
             },
             passthru: {
                 value: false,
+            },
+            commandOnly: {
+                value: false,
+            },
+            queryOnly: {
+                value: false,
+            },
+            bufferRangeCelsius: {
+                value: 2,
+                validate: function (v) {
+                    return typeof v === 'number' && v >= 0.5 && v <= 20;
+                },
             },
             nora: {
                 type: 'nora-config',
@@ -110,6 +123,18 @@
     <div class="form-row d-flex flex-column">
         <label style="width:100%"><i class="fa fa-cog"></i> Supported modes</label>
         <div id="modes-container"></div>
+    </div>
+    <div class="form-row">
+        <label for="node-input-bufferRangeCelsius"><i class="fa fa-random"></i> Offset between heat-cool setpoints</label>
+        <input type="text" id="node-input-bufferRangeCelsius">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-commandOnly"><i class="fa fa-exchange"></i>  Indicates if the device operates using one-way (checked) or two-way communication: </label>
+        <input type="checkbox" id="node-input-commandOnly" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-queryOnly"><i class="fa fa-question"></i>  Required if the device supports query-only execution: </label>
+        <input type="checkbox" id="node-input-queryOnly" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
     <div class="form-row">
         <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
