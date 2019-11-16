@@ -2,6 +2,7 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
+import { R } from './util';
 
 interface ThermostatState {
     online: boolean;
@@ -76,6 +77,7 @@ module.exports = function (RED) {
                     setpoint: state.thermostatTemperatureSetpoint,
                     setpointLow: state.thermostatTemperatureSetpointLow,
                     setpointHigh: state.thermostatTemperatureSetpointHigh,
+                    humidity: state.thermostatHumidityAmbient,
                 },
                 topic: config.topic,
             });
@@ -116,7 +118,9 @@ module.exports = function (RED) {
         });
 
         function notifyState(state: ThermostatState) {
-            stateString$.next(`(${state.thermostatMode}/T:${state.thermostatTemperatureAmbient}/S:${state.thermostatTemperatureSetpoint})`);
+            stateString$.next(
+                R`(${state.thermostatMode}/T:${state.thermostatTemperatureAmbient}/S:${state.thermostatTemperatureSetpoint})`
+            );
         }
 
         function getNumberAndUpdate<T>(payload: any, propName: string, update: T, targetPropName: keyof T) {

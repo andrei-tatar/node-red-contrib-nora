@@ -21,3 +21,13 @@ export function getValue(RED, node, value, type) {
         return RED.util.evaluateNodeProperty(value, type, node);
     }
 }
+
+export function R(parts: TemplateStringsArray, ...substitutions: any[]) {
+    const rounded = substitutions.map(sub => {
+        if (typeof sub === 'number') {
+            return Math.round(sub * 10) / 10;
+        }
+        return sub;
+    });
+    return String.raw(parts, ...rounded);
+}
