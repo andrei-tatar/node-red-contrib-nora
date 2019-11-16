@@ -23,9 +23,11 @@ module.exports = function (RED) {
         });
         const stateString$ = new Subject<string>();
 
-        const { value: openValue, type: openType } = convertValueType(RED, config.openvalue, config.openvalueType, { defaultValue: true });
-        const { value: closeValue, type: closeType } = convertValueType(RED, config.closevalue, config.closevalueType, { defaultValue: false });
-		
+        const { value: openValue, type: openType } =
+            convertValueType(RED, config.openvalue, config.openvalueType, { defaultValue: true });
+        const { value: closeValue, type: closeType } =
+            convertValueType(RED, config.closevalue, config.closevalueType, { defaultValue: false });
+
         const device$ = NoraService
             .getService(RED)
             .getConnection(noraConfig, this, stateString$)
@@ -59,26 +61,24 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(state => {
             notifyState(state);
-			if(state.openPercent == 0) {
-				this.send({
+            if (state.openPercent === 0) {
+                this.send({
                     payload: getValue(RED, this, closeValue, closeType),
-//					payload: closeValue,
                     topic: config.topic
                 });
-			} else {
-				this.send({
-                   payload: getValue(RED, this, openValue, openType),
-//					payload: openValue,
+            } else {
+                this.send({
+                    payload: getValue(RED, this, openValue, openType),
                     topic: config.topic
                 });
-			}
+            }
         });
 
         this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
             }
-			const myOpenValue = getValue(RED, this, openValue, openType);
+            const myOpenValue = getValue(RED, this, openValue, openType);
             const myCloseValue = getValue(RED, this, closeValue, closeType);
             if (RED.util.compareObjects(myOpenValue, msg.payload)) {
                 state$.next({ ...state$.value, openPercent: 100 });
@@ -93,11 +93,11 @@ module.exports = function (RED) {
         });
 
         function notifyState(state: GarageState) {
-				if(state.openPercent == 0) {
-					stateString$.next(`(closed)`);
-                } else {
-					stateString$.next(`(open)`);
-				}
-		}
+            if (state.openPercent === 0) {
+                stateString$.next(`(closed)`);
+            } else {
+                stateString$.next(`(open)`);
+            }
+        }
     });
 };
