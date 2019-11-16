@@ -36,7 +36,7 @@
             bufferRangeCelsius: {
                 value: 2,
                 validate: function (v) {
-                    return typeof v === 'number' && v >= 0.5 && v <= 20;
+                    return !v || RED.validators.number()(v) && v >= 0.5 && v <= 20;
                 },
             },
             nora: {
@@ -125,8 +125,8 @@
         <div id="modes-container"></div>
     </div>
     <div class="form-row">
-        <label for="node-input-bufferRangeCelsius"><i class="fa fa-random"></i> Offset between heat-cool setpoints</label>
-        <input type="text" id="node-input-bufferRangeCelsius">
+        <label for="node-input-bufferRangeCelsius" style="width:auto"><i class="fa fa-random"></i> Buffer range celsius</label>
+        <input type="text" id="node-input-bufferRangeCelsius" style="width:20%">
     </div>
     <div class="form-row">
         <label style="width:auto" for="node-input-commandOnly"><i class="fa fa-exchange"></i>  Indicates if the device operates using one-way (checked) or two-way communication: </label>
