@@ -22,7 +22,7 @@ export class NoraDevice {
         for (const key of keys) {
             const newValue = partial[key];
             const oldValue = this.config.state[key];
-            if (typeof newValue === typeof oldValue && newValue !== oldValue) {
+            if (newValue !== oldValue) {
                 this.config.state[key] = newValue;
             }
         }
