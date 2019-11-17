@@ -18,7 +18,13 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
+        const state$ = new BehaviorSubject<GarageState>({
+            online: true,
+            locked: boolean;
+            jammed: boolean;
+        });
         const stateString$ = new Subject<string>();
+
         
         const lock$ = new BehaviorSubject(false);
         const { value: lockValue, type: lockType } = convertValueType(RED, config.lockvalue, config.lockvalueType, { defaultValue: true });
@@ -36,20 +42,20 @@ module.exports = function (RED) {
                     type: 'lock',
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
-                    state: { online: true, lock: lock$.value, jammed: jammed$.value },
+                    state: state$.value,
                 })),
                 publishReplay(1),
                 refCount(),
                 takeUntil(close$),
             );
 
-        combineLatest(device$, lock$)
+        combineLatest(device$, state$)
             .pipe(
-                tap(([_, lock]) => notifyState(lock)),
+                tap(([_, state]) => notifyState(state)),
                 skip(1),
                 takeUntil(close$),
             )
-            .subscribe(([device, lock]) => device.updateState({ lock }));
+            .subscribe(([device, state]) => device.updateState({ state }));
 
         device$.pipe(
             switchMap(d => d.errors$),
@@ -59,13 +65,22 @@ module.exports = function (RED) {
         device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
-        ).subscribe(s => {
-            const value = s.lock;
-            notifyState(s.lock);
+        ).subscribe(state => {
+          notifyState(state);
             this.send({
-                payload: getValue(RED, this, value ? lockValue : unlockValue, value ? lockType : unlockType),
-                topic: config.topic
+                payload: {
+                    locked: state.locked,
+                    jammed: state.jammed,
+                },
+                topic: config.topic,
             });
+        
+ //           const value = s.lock;
+ //           notifyState(s.lock);
+ //           this.send({
+ //               payload: getValue(RED, this, value ? lockValue : unlockValue, value ? lockType : unlockType),
+ //               topic: config.topic
+ //           });
         });
 
         this.on('input', msg => {
