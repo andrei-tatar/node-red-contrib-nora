@@ -58,7 +58,7 @@ module.exports = function (RED) {
             });
         });
 
-        this.lock('input', msg => {
+        this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
             }
@@ -71,7 +71,7 @@ module.exports = function (RED) {
             }
         });
 
-        this.lock('close', () => {
+        this.on('close', () => {
             close$.next();
             close$.complete();
         });
