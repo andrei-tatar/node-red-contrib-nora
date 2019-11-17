@@ -18,7 +18,7 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const state$ = new BehaviorSubject<GarageState>({
+        const state$ = new BehaviorSubject<LockState>({
             online: true,
             locked: false,
             jammed: false,
