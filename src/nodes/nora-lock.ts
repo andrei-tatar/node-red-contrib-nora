@@ -4,6 +4,12 @@ import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
+interface LockState {
+    online: boolean;
+    locked: boolean;
+    jammed: boolean;
+}
+
 module.exports = function (RED) {
     RED.nodes.registerType('nora-lock', function (this: NodeInterface, config) {
         RED.nodes.createNode(this, config);
@@ -12,11 +18,15 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const lock$ = new BehaviorSubject(false);
         const stateString$ = new Subject<string>();
-
+        
+        const lock$ = new BehaviorSubject(false);
         const { value: lockValue, type: lockType } = convertValueType(RED, config.lockvalue, config.lockvalueType, { defaultValue: true });
         const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockvalue, config.unlockvalueType, { defaultValue: false });
+
+        const jammed$ = new BehaviorSubject(false);
+        const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedvalue, config.jammedvalueType, { defaultValue: true });
+        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedvalue, config.unjammedvalueType, { defaultValue: false });
 
         const device$ = NoraService
             .getService(RED)
@@ -26,7 +36,7 @@ module.exports = function (RED) {
                     type: 'lock',
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
-                    state: { online: true, lock: lock$.value },
+                    state: { online: true, lock: lock$.value, jammed: jammed$.value },
                 })),
                 publishReplay(1),
                 refCount(),
