@@ -1,0 +1,119 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nora-lock', {
+        category: 'nora',
+        color: 'rgb(153, 204, 255)',
+        icon: 'assistant.png',
+        defaults: {
+            devicename: {
+                value: 'Lock',
+                required: true,
+            },
+            roomhint: {
+                value: ''
+            },
+            name: {
+                value: ''
+            },
+            passthru: {
+                value: false,
+            },
+            nora: {
+                type: 'nora-config',
+                required: true
+            },
+            topic: {
+                value: ''
+            },
+            lockvalue: {
+                value: true,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'lockvalueType') : function (v) {
+                    return true
+                })
+            },
+            lockvalueType: {
+                value: 'bool'
+            },
+            unlockvalue: {
+                value: false,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'unlockvalueType') : function (v) {
+                    return true
+                })
+            },
+            unlockvalueType: {
+                value: 'bool'
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        paletteLabel: 'lock',
+        label: function () {
+            return this.name || this.devicename || 'lock';
+        },
+        oneditprepare: function () {
+            $('#node-input-lockvalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-lockvalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
+            $('#node-input-unlockvalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-unlockvalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
+        },
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nora-lock">
+    <div class="form-row">
+        <label for="node-input-nora"><i class="fa fa-table"></i> Config</label>
+        <input type="text" id="node-input-nora">
+    </div>
+    <div class="form-row">
+        <label for="node-input-devicename"><i class="fa fa-i-cursor"></i> Lock</label>
+        <input type="text" id="node-input-devicename">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
+        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lockvalue" style="padding-left:25px; margin-right:-25px">Lock Payload</label>
+        <input type="text" id="node-input-lockvalue" style="width:70%">
+        <input type="hidden" id="node-input-lockvalueType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-unlockvalue" style="padding-left:25px; margin-right:-25px">Unlock Payload</label>
+        <input type="text" id="node-input-unlockvalue" style="width:70%">
+        <input type="hidden" id="node-input-unlockvalueType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
+        <input type="text" id="node-input-roomhint">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic" style="padding-left:25px; margin-right:-25px">Topic</label>
+        <input type="text" id="node-input-topic">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nora-lock">
+    <p>
+    Represents a <a href="https://developers.google.com/actions/smarthome/guides/lock">Google Home lock</a>.
+    Outputs a message when Google Home changes the state of the lock and updates the
+    state of the lock in Google Home on input messages.
+    <br>
+    The Lock/Unlock payload specifies what message should be sent for the different states of the lock and how incoming
+    messages translate to the state of the lock.
+    <br>
+    <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
+</p>
+</script>
