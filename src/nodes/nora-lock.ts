@@ -67,13 +67,15 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(state => {
           notifyState(state);
-            this.send({
-                payload: {
-                    locked: state.locked,
-                    jammed: state.jammed,
-                },
-                topic: config.topic,
-            });
+          state$.value.locked = state.locked;
+          state$.value.jammed = state.jammed;
+//            this.send({
+//                payload: {
+//                    locked: state.locked,
+//                    jammed: state.jammed,
+//                },
+//                topic: config.topic,
+//            });
         
  //           const value = s.lock;
  //           notifyState(s.lock);
