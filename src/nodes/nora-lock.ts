@@ -6,8 +6,8 @@ import { convertValueType, getValue } from './util';
 
 interface LockState {
     online: boolean;
-    locked: boolean;
-    jammed: boolean;
+    isLocked: boolean;
+    isJammed: boolean;
 }
 
 module.exports = function (RED) {
@@ -20,16 +20,16 @@ module.exports = function (RED) {
         const close$ = new Subject();
         const state$ = new BehaviorSubject<LockState>({
             online: true,
-            locked: false,
-            jammed: false,
+            isLocked: false,
+            isJammed: false,
         });
         const stateString$ = new Subject<string>();
         
-        const locked$ = new BehaviorSubject(false);
+        const isLocked$ = new BehaviorSubject(false);
         const { value: lockValue, type: lockType } = convertValueType(RED, config.lockvalue, config.lockvalueType, { defaultValue: true });
         const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockvalue, config.unlockvalueType, { defaultValue: false });
 
-        const jammed$ = new BehaviorSubject(false);
+        const isJammed$ = new BehaviorSubject(false);
         const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedvalue, config.jammedvalueType, { defaultValue: true });
         const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedvalue, config.unjammedvalueType, { defaultValue: false });
 
@@ -66,8 +66,8 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(state => {
           notifyState(state);
-          state$.value.locked = state.locked;
-          state$.value.jammed = state.jammed;
+          state$.value.isLocked = state.isLocked;
+          state$.value.isJammed = state.isJammed;
 //            this.send({
 //                payload: {
 //                    locked: state.locked,
@@ -91,9 +91,9 @@ module.exports = function (RED) {
             const myLockValue = getValue(RED, this, lockValue, lockType);
             const myUnlockValue = getValue(RED, this, unlockValue, unlockType);
             if (RED.util.compareObjects(myLockValue, msg.payload)) {
-                locked$.next(true);
+                isLocked$.next(true);
             } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
-                locked$.next(false);
+                isLocked$.next(false);
             }
         });
 
@@ -102,8 +102,8 @@ module.exports = function (RED) {
             close$.complete();
         });
 
-        function notifyState(locked: boolean) {
-            stateString$.next(`(${locked ? 'locked' : 'unlocked'})`);
+        function notifyState(isLocked: boolean) {
+            stateString$.next(`(${isLocked ? 'locked' : 'unlocked'})`);
         }
     });
 };
