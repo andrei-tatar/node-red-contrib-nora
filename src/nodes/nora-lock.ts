@@ -5,6 +5,7 @@ import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
 interface LockState {
+    online: boolean;
     locked: boolean;
     jammed: boolean;
 }
@@ -18,12 +19,13 @@ module.exports = function (RED) {
 
         const close$ = new Subject();
         const state$ = new BehaviorSubject<LockState>({
+            online: true,
             locked: false,
             jammed: false,
         });
         const stateString$ = new Subject<string>();
         
-        const lock$ = new BehaviorSubject(false);
+        const locked$ = new BehaviorSubject(false);
         const { value: lockValue, type: lockType } = convertValueType(RED, config.lockvalue, config.lockvalueType, { defaultValue: true });
         const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockvalue, config.unlockvalueType, { defaultValue: false });
 
@@ -74,12 +76,12 @@ module.exports = function (RED) {
 //                topic: config.topic,
 //            });
         
- //           const value = s.lock;
- //           notifyState(s.lock);
- //           this.send({
- //               payload: getValue(RED, this, value ? lockValue : unlockValue, value ? lockType : unlockType),
- //               topic: config.topic
- //           });
+//            const value = s.locked;
+//            notifyState(s.locked);
+//            this.send({
+//                payload: getValue(RED, this, value ? lockValue : unlockValue, value ? lockType : unlockType),
+//                topic: config.topic
+            });
         });
 
         this.on('input', msg => {
@@ -89,9 +91,9 @@ module.exports = function (RED) {
             const myLockValue = getValue(RED, this, lockValue, lockType);
             const myUnlockValue = getValue(RED, this, unlockValue, unlockType);
             if (RED.util.compareObjects(myLockValue, msg.payload)) {
-                lock$.next(true);
+                locked$.next(true);
             } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
-                lock$.next(false);
+                locked$.next(false);
             }
         });
 
@@ -100,8 +102,8 @@ module.exports = function (RED) {
             close$.complete();
         });
 
-        function notifyState(lock: boolean) {
-            stateString$.next(`(${lock ? 'lock' : 'unlock'})`);
+        function notifyState(locked: boolean) {
+            stateString$.next(`(${locked ? 'locked' : 'unlocked'})`);
         }
     });
 };
