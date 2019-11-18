@@ -82,7 +82,6 @@ module.exports = function (RED) {
 //                payload: getValue(RED, this, value ? lockValue : unlockValue, value ? lockType : unlockType),
 //                topic: config.topic
             });
-        });
 
         this.on('input', msg => {
             if (config.passthru) {
