@@ -26,13 +26,13 @@ module.exports = function (RED) {
         const stateString$ = new Subject<string>();
         
         const isLocked$ = new BehaviorSubject(false);
-        const { value: lockValue, type: lockType } = convertValueType(RED, config.lockvalue, config.lockvalueType, { defaultValue: true });
-        const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockvalue, config.unlockvalueType, { defaultValue: false });
+        const { value: lockValue, type: lockType } = convertValueType(RED, config.lockValue, config.lockValueType, { defaultValue: true });
+        const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockValue, config.unlockValueType, { defaultValue: false });
 
         const isJammed$ = new BehaviorSubject(false);
-        const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedvalue, config.jammedvalueType, { defaultValue: true });
-        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedvalue, config.unjammedvalueType, { defaultValue: false });
-
+        const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedvalue, config.jammedValueType, { defaultValue: true });
+        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
+        
         const device$ = NoraService
             .getService(RED)
             .getConnection(noraConfig, this, stateString$)
@@ -68,21 +68,18 @@ module.exports = function (RED) {
           notifyState(state);
           state$.value.isLocked = state.isLocked;
           state$.value.isJammed = state.isJammed;
-//            this.send({
-//                payload: {
-//                    locked: state.locked,
-//                    jammed: state.jammed,
-//                },
-//                topic: config.topic,
-//            });
         
-//            const value = s.locked;
-//            notifyState(s.locked);
-//            this.send({
-//                payload: getValue(RED, this, value ? lockValue : unlockValue, value ? lockType : unlockType),
-//                topic: config.topic
+          const value = state.isLocked;
+          const value = state.isJammed;
+          notifyState(state.isLocked);
+          notifyState(state.isJammed);
+          this.send({
+                payload: getValue(RED, this, value ? lockValue : unlockValue, value ? lockType : unlockType),
+                payload: getValue(RED, this, value ? jammedValue : unjammedValue, value ? jammedType : unjammedType),
+                topic: config.topic
             });
-
+        });
+        
         this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
