@@ -5,7 +5,6 @@ import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
 interface LockState {
-    online: boolean;
     locked: boolean;
     jammed: boolean;
 }
@@ -19,12 +18,10 @@ module.exports = function (RED) {
 
         const close$ = new Subject();
         const state$ = new BehaviorSubject<LockState>({
-            online: true,
             locked: false,
             jammed: false,
         });
         const stateString$ = new Subject<string>();
-
         
         const lock$ = new BehaviorSubject(false);
         const { value: lockValue, type: lockType } = convertValueType(RED, config.lockvalue, config.lockvalueType, { defaultValue: true });
