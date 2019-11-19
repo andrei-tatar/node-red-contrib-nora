@@ -93,6 +93,13 @@ module.exports = function (RED) {
             } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
                 isLocked$.next(false);
             }
+            const myJammedValue = getValue(RED, this, jammedValue, jammedType);
+            const myUnjammedValue = getValue(RED, this, unjammedValue, unlockType);
+            if (RED.util.compareObjects(myJammedValue, msg.payload)) {
+                isJammed$.next(true);
+            } else if (RED.util.compareObjects(myUnjammedValue, msg.payload)) {
+                isJammed$.next(false);
+            }
         });
 
         this.on('close', () => {
