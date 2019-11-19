@@ -23,7 +23,8 @@ module.exports = function (RED) {
             online: true,
             isLocked: false,
             isJammed: false,
-        });
+//        });
+};
         const state$ = new BehaviorSubject(initialState);
         
         const stateString$ = new Subject<string>();
