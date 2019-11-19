@@ -78,7 +78,7 @@ module.exports = function (RED) {
                     locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
                     jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
                 },
-                topic: config.topic
+                topic: config.topic,
             });
         });
         
