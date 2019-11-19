@@ -64,11 +64,10 @@ module.exports = function (RED) {
         device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
-//        ).subscribe(state => {
-        ).subscribe((state: LockState) => {
-            notifyState(state);
-            state$.value.isLocked = state.isLocked;
-            state$.value.isJammed = state.isJammed;
+        ).subscribe(state => {
+//            notifyState(state);
+//            state$.value.isLocked = state.isLocked;
+//            state$.value.isJammed = state.isJammed;
             const lvalue = state.isLocked;
             const jvalue = state.isJammed;
             notifyState(state.isLocked);
