@@ -21,8 +21,7 @@ module.exports = function (RED) {
         const state$ = new BehaviorSubject<LockState>({
             online: true,
             isLocked: false,
-            isJammed: false,
-            false,
+            isJammed: false
         });
         const stateString$ = new Subject<string>();
         
