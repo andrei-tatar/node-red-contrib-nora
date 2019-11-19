@@ -4,7 +4,7 @@ import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
 import { convertValueType, getValue } from './util';
 
-interface LockState {
+interface LockUnlockState {
     online: boolean;
     isLocked: boolean;
     isJammed: boolean;
@@ -18,7 +18,7 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const state$ = new BehaviorSubject<LockState>({
+        const state$ = new BehaviorSubject<LockUnlockState>({
             online: true,
             isLocked: false,
             isJammed: false,
