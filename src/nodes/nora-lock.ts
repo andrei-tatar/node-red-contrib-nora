@@ -74,7 +74,7 @@ module.exports = function (RED) {
           notifyState(state.isLocked);
           notifyState(state.isJammed);
           this.send({
-                payload:{
+                payload: {
                     locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
                     jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType)
                 },
