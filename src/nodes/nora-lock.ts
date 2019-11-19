@@ -25,11 +25,11 @@ module.exports = function (RED) {
         });
         const stateString$ = new Subject<string>();
         
-//        const isLocked$ = new BehaviorSubject(false);
+        const isLocked$ = new BehaviorSubject(false);
         const { value: lockValue, type: lockType } = convertValueType(RED, config.lockValue, config.lockValueType, { defaultValue: true });
         const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockValue, config.unlockValueType, { defaultValue: false });
 
-//        const isJammed$ = new BehaviorSubject(false);
+        const isJammed$ = new BehaviorSubject(false);
         const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedValue, config.jammedValueType, { defaultValue: true });
         const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
 
