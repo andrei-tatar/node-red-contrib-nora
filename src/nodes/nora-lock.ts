@@ -66,18 +66,16 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(state => {
             notifyState(state);
-//            state$.value.isLocked = state.isLocked;
-//            state$.value.isJammed = state.isJammed;
-//            const lvalue = state.isLocked;
-//            const jvalue = state.isJammed;
+            state$.value.isLocked = state.isLocked;
+            state$.value.isJammed = state.isJammed;
+            const lvalue = state.isLocked;
+            const jvalue = state.isJammed;
 //            notifyState(state.isLocked);
 //            notifyState(state.isJammed);
             this.send({
                 payload: {
-//                    locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
-//                    jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
-                    locked: getValue(RED, this, lockValue, lockType),
-                    jammed: getValue(RED, this, jammedValue, jammedType),
+                    locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
+                    jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
                 },
                 topic: config.topic,
             });
