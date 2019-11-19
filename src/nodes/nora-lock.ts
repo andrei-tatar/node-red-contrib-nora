@@ -22,6 +22,7 @@ module.exports = function (RED) {
             online: true,
             isLocked: false,
             isJammed: false,
+            false,
         });
         const stateString$ = new Subject<string>();
         
