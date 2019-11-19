@@ -20,8 +20,8 @@ module.exports = function (RED) {
         const close$ = new Subject();
         const state$ = new BehaviorSubject<LockState>({
             online: true,
-//            isLocked: false,
-//            isJammed: false,
+            isLocked: false,
+            isJammed: false,
         });
         const stateString$ = new Subject<string>();
         
