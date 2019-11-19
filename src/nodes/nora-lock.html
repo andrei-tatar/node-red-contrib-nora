@@ -24,26 +24,48 @@
             topic: {
                 value: ''
             },
-            lockvalue: {
+            lockValue: {
                 value: true,
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
-                    'lockvalueType') : function (v) {
+                    'lockValueType') : function (v) {
                     return true
                 })
             },
-            lockvalueType: {
+            lockValueType: {
                 value: 'bool'
             },
-            unlockvalue: {
+            unlockValue: {
                 value: false,
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
-                    'unlockvalueType') : function (v) {
+                    'unlockValueType') : function (v) {
                     return true
                 })
             },
-            unlockvalueType: {
+            unlockValueType: {
+                value: 'bool'
+            },
+            jammedValue: {
+                value: true,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'jammedValueType') : function (v) {
+                    return true
+                })
+            },
+            jammedValueType: {
+                value: 'bool'
+            },
+            unjammedValue: {
+                value: false,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'unjammedValueType') : function (v) {
+                    return true
+                })
+            },
+            unjammedValueType: {
                 value: 'bool'
             },
         },
@@ -62,6 +84,16 @@
             $('#node-input-unlockvalue').typedInput({
                 default: 'bool',
                 typeField: $("#node-input-unlockvalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
+            $('#node-input-jammedvalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-jammedvalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
+            $('#node-input-unjammedvalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-unjammedvalueType"),
                 types: ['str', 'num', 'bool', 'json', 'bin', 'date']
             });
         },
@@ -90,6 +122,16 @@
         <label for="node-input-unlockvalue" style="padding-left:25px; margin-right:-25px">Unlock Payload</label>
         <input type="text" id="node-input-unlockvalue" style="width:70%">
         <input type="hidden" id="node-input-unlockvalueType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-jammedvalue" style="padding-left:25px; margin-right:-25px">Jammed Payload</label>
+        <input type="text" id="node-input-jammedvalue" style="width:70%">
+        <input type="hidden" id="node-input-jammedvalueType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-unjammedvalue" style="padding-left:25px; margin-right:-25px">Unjammed Payload</label>
+        <input type="text" id="node-input-unjammedvalue" style="width:70%">
+        <input type="hidden" id="node-input-unjammedvalueType">
     </div>
     <div class="form-row">
         <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
