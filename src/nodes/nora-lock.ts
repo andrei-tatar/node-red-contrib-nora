@@ -23,16 +23,15 @@ module.exports = function (RED) {
             isLocked: false,
             isJammed: false,
         });
-        
         const stateString$ = new Subject<string>();
         
-        const isLocked$ = new BehaviorSubject(false);
+//        const isLocked$ = new BehaviorSubject(false);
         const { value: lockValue, type: lockType } = convertValueType(RED, config.lockValue, config.lockValueType, { defaultValue: true });
-        const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockValue, config.unlockValueType, { defaultValue: false });
+//        const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockValue, config.unlockValueType, { defaultValue: false });
 
-        const isJammed$ = new BehaviorSubject(false);
+//        const isJammed$ = new BehaviorSubject(false);
         const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedValue, config.jammedValueType, { defaultValue: true });
-        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
+//        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
 
         const device$ = NoraService
             .getService(RED)
@@ -67,16 +66,18 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(state => {
             notifyState(state);
-            state$.value.isLocked = state.isLocked;
-            state$.value.isJammed = state.isJammed;
-            const lvalue = state.isLocked;
-            const jvalue = state.isJammed;
-            notifyState(state.isLocked);
-            notifyState(state.isJammed);
+//            state$.value.isLocked = state.isLocked;
+//            state$.value.isJammed = state.isJammed;
+//            const lvalue = state.isLocked;
+//            const jvalue = state.isJammed;
+//            notifyState(state.isLocked);
+//            notifyState(state.isJammed);
             this.send({
                 payload: {
-                    locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
-                    jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
+//                    locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
+//                    jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
+                    locked: getValue(RED, this, lockValue, lockType),
+                    jammed: getValue(RED, this, jammedValue, jammedType),
                 },
                 topic: config.topic,
             });
@@ -89,16 +90,20 @@ module.exports = function (RED) {
             const myLockValue = getValue(RED, this, lockValue, lockType);
             const myUnlockValue = getValue(RED, this, unlockValue, unlockType);
             if (RED.util.compareObjects(myLockValue, msg.payload)) {
-                isLocked$.next(true);
+//                isLocked$.next(true);
+                state$.next({ ...state$.value, isLocked: true });
             } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
-                isLocked$.next(false);
+//                isLocked$.next(false);
+                state$.next({ ...state$.value, isLocked: false });
             }
             const myJammedValue = getValue(RED, this, jammedValue, jammedType);
             const myUnjammedValue = getValue(RED, this, unjammedValue, unlockType);
             if (RED.util.compareObjects(myJammedValue, msg.payload)) {
-                isJammed$.next(true);
+//                isJammed$.next(true);
+                state$.next({ ...state$.value, isJammed: true });
             } else if (RED.util.compareObjects(myUnjammedValue, msg.payload)) {
-                isJammed$.next(false);
+//                isJammed$.next(false);
+                state$.next({ ...state$.value, isJammed: false });
             }
         });
 
