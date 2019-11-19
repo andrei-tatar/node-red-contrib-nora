@@ -18,7 +18,7 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const state$ = new BehaviorSubject<LockState>({
+        const sstate$ = new BehaviorSubject<LockState>({
             online: true,
             isLocked: false,
             isJammed: false,
@@ -41,14 +41,14 @@ module.exports = function (RED) {
                     type: 'lock',
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
-                    state: state$.value,
+                    state: sstate$.value,
                 })),
                 publishReplay(1),
                 refCount(),
                 takeUntil(close$),
             );
 
-        combineLatest(device$, state$)
+        combineLatest(device$, sstate$)
             .pipe(
                 tap(([_, state]) => notifyState(state)),
                 skip(1),
@@ -62,18 +62,17 @@ module.exports = function (RED) {
         ).subscribe(err => this.warn(err));
 
         device$.pipe(
-            switchMap(d => d.state$),
+            switchMap(d => d.sstate$),
             takeUntil(close$),
         ).subscribe(state => {
-          notifyState(state);
-          state$.value.isLocked = state.isLocked;
-          state$.value.isJammed = state.isJammed;
-        
-          const lvalue = state.isLocked;
-          const jvalue = state.isJammed;
-          notifyState(state.isLocked);
-          notifyState(state.isJammed);
-          this.send({
+            notifyState(state);
+            sstate$.value.isLocked = state.isLocked;
+            sstate$.value.isJammed = state.isJammed;
+            const lvalue = state.isLocked;
+            const jvalue = state.isJammed;
+            notifyState(state.isLocked);
+            notifyState(state.isJammed);
+            this.send({
                 payload: {
                     locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
                     jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
