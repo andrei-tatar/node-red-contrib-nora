@@ -30,8 +30,8 @@ module.exports = function (RED) {
         const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockValue, config.unlockValueType, { defaultValue: false });
 
 //        const isJammed$ = new BehaviorSubject(false);
-//        const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedValue, config.jammedValueType, { defaultValue: true });
-//        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
+        const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedValue, config.jammedValueType, { defaultValue: true });
+        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
 
         const device$ = NoraService
             .getService(RED)
@@ -69,13 +69,13 @@ module.exports = function (RED) {
 //            state$.value.isLocked = state.isLocked;
 //            state$.value.isJammed = state.isJammed;
             const lvalue = state.isLocked;
-//            const jvalue = state.isJammed;
+            const jvalue = state.isJammed;
             notifyState(state.isLocked);
-//            notifyState(state.isJammed);
+            notifyState(state.isJammed);
             this.send({
                 payload: {
                     isLocked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
-//                    isJammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
+                    isJammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
                 },
                 topic: config.topic,
             });
@@ -94,15 +94,15 @@ module.exports = function (RED) {
 //                isLocked$.next(false);
                 state$.next({ ...state$.value, isLocked: false });
             }
-//            const myJammedValue = getValue(RED, this, jammedValue, jammedType);
-//            const myUnjammedValue = getValue(RED, this, unjammedValue, unjammedType);
-//            if (RED.util.compareObjects(myJammedValue, msg.payload)) {
-////                isJammed$.next(true);
-//                state$.next({ ...state$.value, isJammed: true });
-//            } else if (RED.util.compareObjects(myUnjammedValue, msg.payload)) {
-////                isJammed$.next(false);
-//                state$.next({ ...state$.value, isJammed: false });
-//            }
+            const myJammedValue = getValue(RED, this, jammedValue, jammedType);
+            const myUnjammedValue = getValue(RED, this, unjammedValue, unjammedType);
+            if (RED.util.compareObjects(myJammedValue, msg.payload)) {
+//                isJammed$.next(true);
+                state$.next({ ...state$.value, isJammed: true });
+            } else if (RED.util.compareObjects(myUnjammedValue, msg.payload)) {
+//                isJammed$.next(false);
+                state$.next({ ...state$.value, isJammed: false });
+            }
         });
 
         this.on('close', () => {
