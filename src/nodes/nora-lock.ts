@@ -7,7 +7,7 @@ import { convertValueType, getValue } from './util';
 interface LockState {
     online: boolean;
     isLocked: boolean;
-    isJammed: boolean;
+    isJammed?: boolean;
 }
 
 module.exports = function (RED) {
