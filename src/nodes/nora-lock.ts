@@ -50,7 +50,7 @@ module.exports = function (RED) {
 
         combineLatest(device$, state$)
             .pipe(
-                tap(([_, state]) => notifyState(state)),
+                tap(([_, state]) => notifyState(state: boolean)),
                 skip(1),
                 takeUntil(close$),
             )
