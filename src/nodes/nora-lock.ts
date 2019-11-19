@@ -32,7 +32,7 @@ module.exports = function (RED) {
         const isJammed$ = new BehaviorSubject(false);
         const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedValue, config.jammedValueType, { defaultValue: true });
         const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
-        
+
         const device$ = NoraService
             .getService(RED)
             .getConnection(noraConfig, this, stateString$)
