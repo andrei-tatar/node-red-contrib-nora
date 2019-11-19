@@ -8,7 +8,6 @@ interface LockState {
     online: boolean;
     isLocked: boolean;
     isJammed: boolean;
-    test: number;
 }
 
 module.exports = function (RED) {
@@ -23,7 +22,6 @@ module.exports = function (RED) {
             online: true,
             isLocked: false,
             isJammed: false,
-            test: 5,
         });
         const stateString$ = new Subject<string>();
         
