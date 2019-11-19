@@ -18,14 +18,11 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-//        const state$ = new BehaviorSubject<LockState>({
-       const initialState: LockState = {
+        const state$ = new BehaviorSubject<LockState>({
             online: true,
             isLocked: false,
             isJammed: false,
-//        });
-};
-        const state$ = new BehaviorSubject(initialState);
+        });
         
         const stateString$ = new Subject<string>();
         
