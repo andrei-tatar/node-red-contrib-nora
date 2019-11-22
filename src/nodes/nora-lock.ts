@@ -86,7 +86,7 @@ module.exports = function (RED) {
             if (RED.util.compareObjects(myLockValue, msg.payload.isLocked)) {
                 state$.next({ ...state$.value, isLocked: true });
             } else if (RED.util.compareObjects(myUnlockValue, msg.payload.isLocked)) {
-//                state$.next({ ...state$.value, isLocked: false });
+                state$.next({ isLocked: false });
             }
             const myJammedValue = getValue(RED, this, jammedValue, jammedType);
             const myUnjammedValue = getValue(RED, this, unjammedValue, unjammedType);
