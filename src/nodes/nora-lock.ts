@@ -82,15 +82,16 @@ module.exports = function (RED) {
                 this.send(msg);
             }
             const state = { ...state$.value };
-//            let update = false;
+            let update = false;
             const myLockValue = getValue(RED, this, lockValue, lockType);
             const myUnlockValue = getValue(RED, this, unlockValue, unlockType);
             if (RED.util.compareObjects(myLockValue, msg.payload.isLocked)) {
                 state$.next({ ...state$.value, isLocked: true });
             } else if (RED.util.compareObjects(myUnlockValue, msg.payload.isLocked)) {
                 state.isLocked = false;
-//                update = true;
+                update = true;
             }
+            if (update) { state$.next(state); }
             const myJammedValue = getValue(RED, this, jammedValue, jammedType);
             const myUnjammedValue = getValue(RED, this, unjammedValue, unjammedType);
             if (RED.util.compareObjects(myJammedValue, msg.payload.isJammed)) {
