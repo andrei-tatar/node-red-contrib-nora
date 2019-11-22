@@ -70,8 +70,6 @@ module.exports = function (RED) {
 //            state$.value.isJammed = state.isJammed;
             const lvalue = state.isLocked;
             const jvalue = state.isJammed;
-            notifyState(state.isLocked);
-            notifyState(state.isJammed);
             this.send({
                 payload: {
                     isLocked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
@@ -110,9 +108,10 @@ module.exports = function (RED) {
             close$.complete();
         });
 
-        function notifyState(isLocked: boolean) {
-            stateString$.next(`(${isLocked ? 'locked' : 'unlocked'})`);
+        function notifyState(state: LockState) {
+               stateString$.next(`(${state.isLocked ? 'locked' : 'unlocked'}:${state.isJammed?'jammed':'-'})`);
         }
+
     });
 };
 
