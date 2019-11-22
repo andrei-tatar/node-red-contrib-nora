@@ -70,8 +70,8 @@ module.exports = function (RED) {
             const jvalue = state.isJammed;
             this.send({
                 payload: {
-                    isLocked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockValueType : unlockValueType),
-                    isJammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedValueType : unjammedValueType),
+                    isLocked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
+                    isJammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
                 },
                 topic: config.topic,
             });
