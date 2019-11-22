@@ -234,7 +234,7 @@ module.exports = function (RED) {
             }
             if (colorControl) {
                 newStage.color = {
-                    spectrumHsv: state.color.spectrumHSV
+                    spectrumHsv: (state.color.spectrumHSV ? state.color.spectrumHSV : state.color.spectrumHsv)
                 }
             }
             return newStage;
