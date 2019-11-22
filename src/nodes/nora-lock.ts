@@ -65,9 +65,7 @@ module.exports = function (RED) {
             switchMap(d => d.state$),
             takeUntil(close$),
         ).subscribe(state => {
-//            notifyState(state);
-//            state$.value.isLocked = state.isLocked;
-//            state$.value.isJammed = state.isJammed;
+            notifyState(state);
             const lvalue = state.isLocked;
             const jvalue = state.isJammed;
             this.send({
