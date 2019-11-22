@@ -28,7 +28,7 @@
                 value: true,
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
-                    'lockValueType') : function (v) {
+                    'lockType') : function (v) {
                     return true
                 })
             },
@@ -39,7 +39,7 @@
                 value: false,
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
-                    'unlockValueType') : function (v) {
+                    'unlockType') : function (v) {
                     return true
                 })
             },
@@ -50,7 +50,7 @@
                 value: true,
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
-                    'jammedValueType') : function (v) {
+                    'jammedType') : function (v) {
                     return true
                 })
             },
@@ -61,7 +61,7 @@
                 value: false,
                 required: true,
                 validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
-                    'unjammedValueType') : function (v) {
+                    'unjammedType') : function (v) {
                     return true
                 })
             },
