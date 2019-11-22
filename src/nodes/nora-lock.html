@@ -76,24 +76,24 @@
             return this.name || this.devicename || 'lock';
         },
         oneditprepare: function () {
-            $('#node-input-lockvalue').typedInput({
+            $('#node-input-lockValue').typedInput({
                 default: 'bool',
-                typeField: $("#node-input-lockvalueType"),
+                typeField: $("#node-input-lockValueType"),
                 types: ['str', 'num', 'bool', 'json', 'bin', 'date']
             });
-            $('#node-input-unlockvalue').typedInput({
+            $('#node-input-unlockValue').typedInput({
                 default: 'bool',
-                typeField: $("#node-input-unlockvalueType"),
+                typeField: $("#node-input-unlockValueType"),
                 types: ['str', 'num', 'bool', 'json', 'bin', 'date']
             });
-            $('#node-input-jammedvalue').typedInput({
+            $('#node-input-jammedValue').typedInput({
                 default: 'bool',
-                typeField: $("#node-input-jammedvalueType"),
+                typeField: $("#node-input-jammedValueType"),
                 types: ['str', 'num', 'bool', 'json', 'bin', 'date']
             });
-            $('#node-input-unjammedvalue').typedInput({
+            $('#node-input-unjammedValue').typedInput({
                 default: 'bool',
-                typeField: $("#node-input-unjammedvalueType"),
+                typeField: $("#node-input-unjammedValueType"),
                 types: ['str', 'num', 'bool', 'json', 'bin', 'date']
             });
         },
