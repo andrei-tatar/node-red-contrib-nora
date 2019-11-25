@@ -117,12 +117,12 @@
         <input type="text" id="node-input-devicename">
     </div>
     <div class="form-row">
-        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
-        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
-    </div> 
-    <div class="form-row">
         <label  style="width:auto; font-weight: bold" >Message Payloads:</label>
     </div>
+    <div class="form-row">
+            <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
+            <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
+    </div> 
     <div class="form-row">
         <label for="node-input-lockValue" style="padding-left:20px; margin-right:-20px">Lock</label>
         <input type="text" id="node-input-lockValue" style="width:70%">
@@ -161,8 +161,13 @@
     Outputs a message when Google Home changes the state of the lock and updates the
     state of the lock in Google Home on input messages.
     <br>
-    The Lock/Unlock payload specifies what message should be sent for the different states of the lock and how incoming
-    messages translate to the state of the lock.
+    <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.<br>
+    <strong>Lock Name</strong>: Provides the device name to be sent to Google.<br>
+    <strong>Message Payloads</strong>:<br>
+    The Lock/Unlock payload specifies what msg.payload.locked payload should be sent for the different states of the lock and how incoming
+    messages translate to the state of the lock.<br>
+    The Jammed/Unjammed payload specifies what msg.payload.jammed payload should be sent for the different states of the lock and how incoming
+    messages translate to the state of the lock.<br>
     <br>
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
 </p>
