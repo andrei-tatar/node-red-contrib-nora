@@ -164,11 +164,9 @@
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.<br>
     <strong>Lock Name</strong>: Provides the device name to be sent to Google.<br>
     <strong>Message Payloads</strong>:<br>
-    The Lock/Unlock payload specifies what msg.payload.locked payload should be sent for the different states of the lock and how incoming
+    Lock/Unlock specifies what <i>msg.payload.locked</i> payload should be sent for the state of the lock, and how incoming
     messages translate to the state of the lock.<br>
-    The Jammed/Unjammed payload specifies what msg.payload.jammed payload should be sent for the different states of the lock and how incoming
-    messages translate to the state of the lock.<br>
-    <br>
-    <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
+    Jammed/Unjammed payload specifies what <i>msg.payload.jammed</i> payload should be sent if the lock is jammed or unjammed, and how incoming
+    messages translate to if the lock is jammed or unjammed.<br>
 </p>
 </script>
