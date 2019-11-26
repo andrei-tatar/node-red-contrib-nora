@@ -46,6 +46,14 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
+        combineLatest(device$, state$)
+            .pipe(
+                tap(([_, state]) => notifyState(state)),
+                skip(1),
+                takeUntil(close$),
+            )
+            .subscribe(([device, state]) => device.updateState(state));
+
         device$.pipe(
             switchMap(d => d.errors$),
             takeUntil(close$),
@@ -57,7 +65,7 @@ module.exports = function (RED) {
         ).subscribe(state => {
             notifyState(state);
             const lvalue = state.isLocked;
-            if (!state.isJammed) {
+            if (state.isJammed != true) {
                 this.send({
                     payload: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
                     topic: config.topic,
@@ -67,15 +75,6 @@ module.exports = function (RED) {
             }
         });
         
-        combineLatest(device$, state$)
-            .pipe(
-                tap(([_, state]) => notifyState(state)),
-                skip(1),
-                takeUntil(close$),
-            )
-            .subscribe(([device, state]) => device.updateState(state));
-        
-
         this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
@@ -104,7 +103,7 @@ module.exports = function (RED) {
         });
 
         function notifyState(state: LockState) {
-            if (!state.isJammed) {
+            if (state.isJammed |= true) {
                 stateString$.next(`(${state.isLocked ? 'locked' : 'unlocked'}:${state.isJammed?'jammed':'-'})`)
             }
         }
