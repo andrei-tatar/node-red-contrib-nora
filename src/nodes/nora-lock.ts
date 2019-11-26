@@ -46,14 +46,6 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
-        combineLatest(device$, state$)
-            .pipe(
-                tap(([_, state]) => notifyState(state)),
-                skip(1),
-                takeUntil(close$),
-            )
-            .subscribe(([device, state]) => device.updateState(state));
-
         device$.pipe(
             switchMap(d => d.errors$),
             takeUntil(close$),
@@ -75,6 +67,15 @@ module.exports = function (RED) {
             }
         });
         
+        combineLatest(device$, state$)
+            .pipe(
+                tap(([_, state]) => notifyState(state)),
+                skip(1),
+                takeUntil(close$),
+            )
+            .subscribe(([device, state]) => device.updateState(state));
+        
+
         this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
