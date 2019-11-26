@@ -104,8 +104,7 @@ module.exports = function (RED) {
 
         function notifyState(state: LockState) {
             if(state.isJammed){
-                stateString$.next(`(jammed)`);
-                this.error('Lock is jammed')  
+                stateString$.next(`(jammed)`)
             } else {
                 stateString$.next(`(${state.isLocked ? 'locked' : 'unlocked'})`)
             }
