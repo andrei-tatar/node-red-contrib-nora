@@ -65,14 +65,14 @@ module.exports = function (RED) {
         ).subscribe(state => {
             notifyState(state);
             const lvalue = state.isLocked;
-            const jvalue = state.isJammed;
-            this.send({
-                payload: {
-                    locked: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
-                    jammed: getValue(RED, this, jvalue ? jammedValue : unjammedValue, jvalue ? jammedType : unjammedType),
-                },
-                topic: config.topic,
-            });
+            if (!isJammed) {
+                this.send({
+                    payload: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
+                    topic: config.topic,
+                });
+            } else {
+                this.error('Lock is jammed');
+            }
         });
         
         this.on('input', msg => {
@@ -81,16 +81,19 @@ module.exports = function (RED) {
             }
             const myLockValue = getValue(RED, this, lockValue, lockType);
             const myUnlockValue = getValue(RED, this, unlockValue, unlockType);
-            if (RED.util.compareObjects(myLockValue, msg.payload.locked)) {
-                state$.next({ ...state$.value, isLocked: true });
-            } else if (RED.util.compareObjects(myUnlockValue, msg.payload.locked)) {
-                state$.next({ ...state$.value, isLocked: false });            }
-            const myJammedValue = getValue(RED, this, jammedValue, jammedType);
-            const myUnjammedValue = getValue(RED, this, unjammedValue, unjammedType);
-            if (RED.util.compareObjects(myJammedValue, msg.payload.jammed)) {
-                state$.next({ ...state$.value, isJammed: true });
-            } else if (RED.util.compareObjects(myUnjammedValue, msg.payload.jammed)) {
-                state$.next({ ...state$.value, isJammed: false });
+            if (msg.topic == "Jammed") {
+                const myJammedValue = getValue(RED, this, jammedValue, jammedType);
+                const myUnjammedValue = getValue(RED, this, unjammedValue, unjammedType);
+                if (RED.util.compareObjects(myJammedValue, msg.payload)) {
+                    state$.next({ ...state$.value, isJammed: true });
+                } else if (RED.util.compareObjects(myUnjammedValue, msg.payload)) {
+                    state$.next({ ...state$.value, isJammed: false });
+                }
+            } else {
+                if (RED.util.compareObjects(myLockValue, msg.payload)) {
+                    state$.next({ ...state$.value, isLocked: true });
+                } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
+                    state$.next({ ...state$.value, isLocked: false });            }
             }
         });
 
