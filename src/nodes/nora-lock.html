@@ -134,6 +134,9 @@
         <input type="hidden" id="node-input-unlockValueType">
     </div>
     <div class="form-row">
+        <label  style="width:auto", font-style: "italic" >Optional</label>
+    </div>
+    <div class="form-row">
         <label for="node-input-jammedValue" style="padding-left:20px; margin-right:-20px">Jammed</label>
         <input type="text" id="node-input-jammedValue" style="width:70%">
         <input type="hidden" id="node-input-jammedValueType">
@@ -163,9 +166,8 @@
     <br>
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.<br>
     <strong>Lock Name</strong>: Provides the device name to be sent to Google.<br>
-    <strong>Lock/Unlock</strong> specifies what <i>msg.payload.locked</i> payload should be sent for the state of the lock, and how incoming
-    messages translate to the state of the lock.<br>
-    <strong>Jammed/Unjammed</strong> payload specifies what <i>msg.payload.jammed</i> payload should be sent if the lock is jammed or unjammed, and how incoming
-    messages translate to if the lock is jammed or unjammed.<br>
+    <strong>Lock/Unlock</strong> specifies what payload should be sent for the state of the lock, and how incoming
+    messages translate to the state of the lock.<br><br>
+    <strong>Jammed/Unjammed</strong> is optional and when combined with <i>msg.topic = Jammed</i> specifies what incoming messages translate to if the lock is jammed or unjammed.<br>
 </p>
 </script>
