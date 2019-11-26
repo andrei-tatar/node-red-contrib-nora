@@ -95,6 +95,9 @@ module.exports = function (RED) {
                 } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
                     state$.next({ ...state$.value, isLocked: false });            }
             }
+            if (state.isJammed) {
+                this.error('Lock is jammed');
+            }
         });
 
         this.on('close', () => {
