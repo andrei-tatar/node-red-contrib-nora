@@ -103,7 +103,7 @@ module.exports = function (RED) {
         });
 
         function notifyState(state: LockState) {
-            stateString$.next(`(${state.isLocked ? 'locked' : 'unlocked'}:${state.isJammed?'jammed':'-'})`)
+            stateString$.next(if(!state.isJammed){`(${state.isLocked ? 'locked' : 'unlocked'}:${state.isJammed?'jammed':'-'})`})
         }
 
     });
