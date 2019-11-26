@@ -65,7 +65,7 @@ module.exports = function (RED) {
         ).subscribe(state => {
             notifyState(state);
             const lvalue = state.isLocked;
-            if (!isJammed) {
+            if (!state.isJammed) {
                 this.send({
                     payload: getValue(RED, this, lvalue ? lockValue : unlockValue, lvalue ? lockType : unlockType),
                     topic: config.topic,
