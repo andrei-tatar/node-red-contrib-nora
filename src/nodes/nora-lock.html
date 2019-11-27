@@ -167,8 +167,8 @@
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.<br>
     <strong>Lock Name</strong>: Provides the device name to be sent to Google.<br>
     <strong>Lock/Unlock</strong> specifies what payload should be sent for the state of the lock, and how incoming
-    messages translate to the state of the lock.<br><br>
-    <strong>Jammed/Unjammed</strong> is optional and when combined with <i>msg.topic = Jammed</i> specifies what incoming messages translate to if the lock is jammed or unjammed.<br>
+    messages translate to the state of the lock.<br>
+    <strong>Jammed/Unjammed</strong> is optional and when combined with <i>msg.topic = Jammed</i> specifies what incoming messages translate to if the lock is jammed or unjammed. Also, any lock/unlock commands sent from Google while door is jammed won't go through and will be replaced with an error message.<br>
     <strong>Topic</strong> sets the topic of the outbound message.<br>
 </p>
 </script>
