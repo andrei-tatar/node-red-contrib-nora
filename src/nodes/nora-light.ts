@@ -8,7 +8,7 @@ interface LightDeviceState {
     on: boolean;
     brightness?: number;
     color?: {
-        spectrumHsv: {
+        spectrumHSV: {
             hue: number;
             saturation: number;
             value: number;
@@ -39,7 +39,7 @@ module.exports = function (RED) {
         }
         if (colorControl) {
             initialState.color = {
-                spectrumHsv: {
+                spectrumHSV: {
                     hue: 0,
                     saturation: 0,
                     value: 1,
@@ -86,8 +86,6 @@ module.exports = function (RED) {
             switchMap(d => d.state$),
             takeUntil(close$),
         ).subscribe((state: LightDeviceState) => {
-            // TODO remove after setting name correctly in service (correct is spectrumHSV and not spectrumHsv) 
-            state = parseState(state)
             notifyState(state);
             state$.value.on = state.on;
             if (brightnessControl) {
@@ -146,21 +144,21 @@ module.exports = function (RED) {
             } else {
                 if (statepayload) {
                     if (typeof msg.payload !== 'object' || !msg.payload) {
-                        this.error('Payload must be an object like { [on]: true/false, [brightness]: 0-100, [color]: { [spectrumHsv] : { [hue]: 0-360, [saturation]:0-1, [value]:0-1 } } }');
+                        this.error('Payload must be an object like { [on]: true/false, [brightness]: 0-100, [color]: { [spectrumHSV] : { [hue]: 0-360, [saturation]:0-1, [value]:0-1 } } }');
                     } else {
                         const state = { ...state$.value };
                         let update = false;
                         if ('color' in msg.payload && typeof msg.payload.color === 'object'
-                            && 'spectrumHsv' in msg.payload.color && typeof msg.payload.color.spectrumHsv === 'object'
-                            && 'hue' in msg.payload.color.spectrumHsv && typeof msg.payload.color.spectrumHsv.hue === 'number' && isFinite(msg.payload.color.spectrumHsv.hue)
-                            && 'saturation' in msg.payload.color.spectrumHsv && typeof msg.payload.color.spectrumHsv.saturation === 'number' && isFinite(msg.payload.color.spectrumHsv.saturation)
-                            && 'value' in msg.payload.color.spectrumHsv && typeof msg.payload.color.spectrumHsv.value === 'number' && isFinite(msg.payload.color.spectrumHsv.value)) {
+                            && 'spectrumHSV' in msg.payload.color && typeof msg.payload.color.spectrumHSV === 'object'
+                            && 'hue' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.hue === 'number' && isFinite(msg.payload.color.spectrumHSV.hue)
+                            && 'saturation' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.saturation === 'number' && isFinite(msg.payload.color.spectrumHSV.saturation)
+                            && 'value' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.value === 'number' && isFinite(msg.payload.color.spectrumHSV.value)) {
 
                             state.color = {
-                                spectrumHsv : {
-                                    hue: Math.max(0, Math.min(360, msg.payload.color.spectrumHsv.hue)),
-                                    saturation: Math.max(0, Math.min(1, msg.payload.color.spectrumHsv.saturation)),
-                                    value: Math.max(0, Math.min(1, msg.payload.color.spectrumHsv.value)),
+                                spectrumHSV : {
+                                    hue: Math.max(0, Math.min(360, msg.payload.color.spectrumHSV.hue)),
+                                    saturation: Math.max(0, Math.min(1, msg.payload.color.spectrumHSV.saturation)),
+                                    value: Math.max(0, Math.min(1, msg.payload.color.spectrumHSV.value)),
                                 }
                             }
                             update = true;
@@ -216,28 +214,12 @@ module.exports = function (RED) {
                 stateString += ` ${state.brightness}`;
             }
             if (colorControl) {
-                stateString += ` hue: ${Number(state.color.spectrumHsv.hue).toFixed(2)}°`;
-                stateString += ` sat: ${Number(state.color.spectrumHsv.saturation * 100).toFixed(2)}%`;
-                stateString += ` val: ${Number(state.color.spectrumHsv.value * 100).toFixed(2)}%`;
+                stateString += ` hue: ${Number(state.color.spectrumHSV.hue).toFixed(2)}°`;
+                stateString += ` sat: ${Number(state.color.spectrumHSV.saturation * 100).toFixed(2)}%`;
+                stateString += ` val: ${Number(state.color.spectrumHSV.value * 100).toFixed(2)}%`;
             }
 
             stateString$.next(`(${stateString})`);
-        }
-
-        // TODO remove after setting name correctly in service (correct is spectrumHSV and not spectrumHsv) 
-        function parseState(state) {
-            var newStage:LightDeviceState = {
-                on: state.on
-            };
-            if (brightnessControl) {
-                newStage.brightness = state.brightness;
-            }
-            if (colorControl) {
-                newStage.color = {
-                    spectrumHsv: (state.color.spectrumHSV ? state.color.spectrumHSV : state.color.spectrumHsv)
-                }
-            }
-            return newStage;
         }
     });
 };
