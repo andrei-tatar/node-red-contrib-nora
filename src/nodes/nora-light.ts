@@ -8,7 +8,7 @@ interface LightDeviceState {
     on: boolean;
     brightness?: number;
     color?: {
-        spectrumHSV: {
+        spectrumHsv: {
             hue: number;
             saturation: number;
             value: number;
@@ -39,7 +39,7 @@ module.exports = function (RED) {
         }
         if (colorControl) {
             initialState.color = {
-                spectrumHSV: {
+                spectrumHsv: {
                     hue: 0,
                     saturation: 0,
                     value: 1,
@@ -103,9 +103,9 @@ module.exports = function (RED) {
                 });
             } else {
                 if (statepayload) {
-                    var payload =  null
+                    var payload = null
                     if (colorControl) {
-                        payload =  {
+                        payload = {
                             on: state.on,
                             brightness: state.brightness,
                             color: state.color
@@ -144,24 +144,23 @@ module.exports = function (RED) {
             } else {
                 if (statepayload) {
                     if (typeof msg.payload !== 'object' || !msg.payload) {
-                        this.error('Payload must be an object like { [on]: true/false, [brightness]: 0-100, [color]: { [spectrumHSV] : { [hue]: 0-360, [saturation]:0-1, [value]:0-1 } } }');
+                        // tslint:disable-next-line: max-line-length
+                        this.error('Payload must be an object like { [on]: true/false, [brightness]: 0-100, [color]: { [spectrumHsv] : { [hue]: 0-360, [saturation]:0-1, [value]:0-1 } } }');
                     } else {
                         const state = { ...state$.value };
                         let update = false;
-                        if ('color' in msg.payload && typeof msg.payload.color === 'object'
-                            && 'spectrumHSV' in msg.payload.color && typeof msg.payload.color.spectrumHSV === 'object'
-                            && 'hue' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.hue === 'number' && isFinite(msg.payload.color.spectrumHSV.hue)
-                            && 'saturation' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.saturation === 'number' && isFinite(msg.payload.color.spectrumHSV.saturation)
-                            && 'value' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.value === 'number' && isFinite(msg.payload.color.spectrumHSV.value)) {
-
-                            state.color = {
-                                spectrumHSV : {
-                                    hue: Math.max(0, Math.min(360, msg.payload.color.spectrumHSV.hue)),
-                                    saturation: Math.max(0, Math.min(1, msg.payload.color.spectrumHSV.saturation)),
-                                    value: Math.max(0, Math.min(1, msg.payload.color.spectrumHSV.value)),
-                                }
+                        if ('color' in msg.payload) {
+                            const color = msg.payload.color;
+                            if (validColor(color)) {
+                                state.color = {
+                                    spectrumHsv: {
+                                        hue: Math.max(0, Math.min(360, color.spectrumHsv.hue)),
+                                        saturation: Math.max(0, Math.min(1, color.spectrumHsv.saturation)),
+                                        value: Math.max(0, Math.min(1, color.spectrumHsv.value)),
+                                    }
+                                };
+                                update = true;
                             }
-                            update = true;
                         }
                         if ('brightness' in msg.payload && typeof msg.payload.brightness === 'number' && isFinite(msg.payload.brightness)) {
                             state.brightness = Math.max(1, Math.min(100, Math.round(msg.payload.brightness)));
@@ -214,9 +213,9 @@ module.exports = function (RED) {
                 stateString += ` ${state.brightness}`;
             }
             if (colorControl) {
-                stateString += ` hue: ${Number(state.color.spectrumHSV.hue).toFixed(2)}°`;
-                stateString += ` sat: ${Number(state.color.spectrumHSV.saturation * 100).toFixed(2)}%`;
-                stateString += ` val: ${Number(state.color.spectrumHSV.value * 100).toFixed(2)}%`;
+                stateString += ` hue: ${Number(state.color.spectrumHsv.hue).toFixed(2)}°`;
+                stateString += ` sat: ${Number(state.color.spectrumHsv.saturation * 100).toFixed(2)}%`;
+                stateString += ` val: ${Number(state.color.spectrumHsv.value * 100).toFixed(2)}%`;
             }
 
             stateString$.next(`(${stateString})`);
@@ -224,3 +223,13 @@ module.exports = function (RED) {
     });
 };
 
+function validColor(color: any): color is { spectrumHsv: { hue: number, saturation: number, value: number } } {
+    if (typeof color !== 'object' || !('spectrumHsv' in color) || typeof color.spectrumHsv !== 'object') {
+        return false;
+    }
+
+    const spectrumHsv = color.spectrumHsv;
+    return 'hue' in spectrumHsv && typeof spectrumHsv.hue === 'number' && isFinite(spectrumHsv.hue)
+        && 'saturation' in spectrumHsv && typeof spectrumHsv.saturation === 'number' && isFinite(spectrumHsv.saturation)
+        && 'value' in spectrumHsv && typeof spectrumHsv.value === 'number' && isFinite(spectrumHsv.value);
+}
