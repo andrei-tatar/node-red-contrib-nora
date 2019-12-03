@@ -84,7 +84,7 @@
                     $('#light-on').hide();
                     $('#light-off').hide();
                     $('#light-full-state').show();
-                    // $('#light-color').show();
+                    $('#light-color').show();
 
                     if ($('#node-input-statepayload').is(':checked')) {
                         $('#light-brightnessoverride').hide();
@@ -96,7 +96,7 @@
                     $('#light-off').show();
                     $('#light-full-state').hide();
                     $('#light-brightnessoverride').hide();
-                    // $('#light-color').hide();
+                    $('#light-color').hide();
                 }
             });
             $('#node-input-statepayload').change(function () {
@@ -127,10 +127,10 @@
         <label style="width:auto" for="node-input-brightnesscontrol"><i class="fa fa-lightbulb-o"></i> Allow brightness control: </label>
         <input type="checkbox" checked id="node-input-brightnesscontrol" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
-    <!-- <div class="form-row" id="light-color">
+    <div class="form-row" id="light-color">
         <label style="width:auto" for="node-input-lightcolor"><i class="fa fa-arrow-right"></i> Color support (RGB): </label>
         <input type="checkbox" id="node-input-lightcolor" style="display:inline-block; width:auto; vertical-align:top;">
-    </div> -->
+    </div>
     <div class="form-row" id="light-full-state">
         <label style="width:auto" for="node-input-statepayload"><i class="fa fa-arrow-right"></i> Send/receive complete state as payload: </label>
         <input type="checkbox" checked id="node-input-statepayload" style="display:inline-block; width:auto; vertical-align:top;">
@@ -173,13 +173,15 @@
     outputing the On payload when the light is turned on or the off payload when turned off.
     <br>
     In brightnesss control mode, if <strong>Send/receive complete state</strong> is checked, the input/output payload
-    is in the following format <code>{on: boolean, brightness: number (0-100)}</code>, otherwise the payload is only a
+    is in the following format <code>{on: boolean, brightness: number (0-100), color: { spectrumHsv: { hue: number (0-360), saturation: number (0-1), value: number (0-1) } } }</code>, otherwise the payload is only a
     number (0-100) representing the brightness (0 meaning the light is off, 1-100 on with the specificed brightness).
     <br>
     <strong>Override brightness when input is 0</strong> is the value the brightness is set when <strong>Send/receive
         complete state</strong> is unchecked and a value of 0 is received on the input. This is used so that the next
     time you ask Google Home to turn on a light, it uses this override brightness instead of the last value. You can
     leave the input empty to use the last brightness value.
+    <br>
+    <strong>Color HSV</strong>: represents colors as a (hue, saturation, value) triplet. Any color value in HSV may be converted to RGB. Hue has a range of [0, 360) degrees (exclusive of 360, since it wraps around to 0 degrees). Saturation and value are represented by floats in the range [0.0, 1.0].
     <br>
     <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
 </p>

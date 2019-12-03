@@ -8,7 +8,7 @@ interface LightDeviceState {
     on: boolean;
     brightness?: number;
     color?: {
-        spectrumHsv: {
+        spectrumHSV: {
             hue: number;
             saturation: number;
             value: number;
@@ -39,7 +39,7 @@ module.exports = function (RED) {
         }
         if (colorControl) {
             initialState.color = {
-                spectrumHsv: {
+                spectrumHSV: {
                     hue: 0,
                     saturation: 0,
                     value: 1,
@@ -103,11 +103,21 @@ module.exports = function (RED) {
                 });
             } else {
                 if (statepayload) {
-                    this.send({
-                        payload: {
+                    var payload =  null
+                    if (colorControl) {
+                        payload =  {
                             on: state.on,
                             brightness: state.brightness,
-                        },
+                            color: state.color
+                        };
+                    } else {
+                        payload = {
+                            on: state.on,
+                            brightness: state.brightness,
+                        };
+                    }
+                    this.send({
+                        payload: payload,
                         topic: config.topic
                     });
                 } else {
@@ -134,10 +144,25 @@ module.exports = function (RED) {
             } else {
                 if (statepayload) {
                     if (typeof msg.payload !== 'object' || !msg.payload) {
-                        this.error('Payload must be an object like { [on]: true/false, [brightness]: 0-100 }');
+                        this.error('Payload must be an object like { [on]: true/false, [brightness]: 0-100, [color]: { [spectrumHSV] : { [hue]: 0-360, [saturation]:0-1, [value]:0-1 } } }');
                     } else {
                         const state = { ...state$.value };
                         let update = false;
+                        if ('color' in msg.payload && typeof msg.payload.color === 'object'
+                            && 'spectrumHSV' in msg.payload.color && typeof msg.payload.color.spectrumHSV === 'object'
+                            && 'hue' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.hue === 'number' && isFinite(msg.payload.color.spectrumHSV.hue)
+                            && 'saturation' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.saturation === 'number' && isFinite(msg.payload.color.spectrumHSV.saturation)
+                            && 'value' in msg.payload.color.spectrumHSV && typeof msg.payload.color.spectrumHSV.value === 'number' && isFinite(msg.payload.color.spectrumHSV.value)) {
+
+                            state.color = {
+                                spectrumHSV : {
+                                    hue: Math.max(0, Math.min(360, msg.payload.color.spectrumHSV.hue)),
+                                    saturation: Math.max(0, Math.min(1, msg.payload.color.spectrumHSV.saturation)),
+                                    value: Math.max(0, Math.min(1, msg.payload.color.spectrumHSV.value)),
+                                }
+                            }
+                            update = true;
+                        }
                         if ('brightness' in msg.payload && typeof msg.payload.brightness === 'number' && isFinite(msg.payload.brightness)) {
                             state.brightness = Math.max(1, Math.min(100, Math.round(msg.payload.brightness)));
                             update = true;
@@ -188,6 +213,12 @@ module.exports = function (RED) {
             if (brightnessControl) {
                 stateString += ` ${state.brightness}`;
             }
+            if (colorControl) {
+                stateString += ` hue: ${Number(state.color.spectrumHSV.hue).toFixed(2)}°`;
+                stateString += ` sat: ${Number(state.color.spectrumHSV.saturation * 100).toFixed(2)}%`;
+                stateString += ` val: ${Number(state.color.spectrumHSV.value * 100).toFixed(2)}%`;
+            }
+
             stateString$.next(`(${stateString})`);
         }
     });
