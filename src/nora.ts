@@ -1,4 +1,7 @@
+import * as jwt from 'jsonwebtoken';
 import { combineLatest, EMPTY, merge, Observable, Subject, timer } from 'rxjs';
+import { URL } from 'url';
+
 import {
     delay, delayWhen, distinctUntilChanged, finalize, ignoreElements,
     publishReplay, refCount, retryWhen, startWith, switchMap, takeUntil, tap
@@ -87,15 +90,20 @@ export class NoraService {
     }
 
     private createSocketObservable({ token, group, notify }: ConfigNode, stop: Observable<any>) {
-        const id = token.substr(-5);
+        const decodeToken = jwt.decode(token);
+        const id = decodeToken['uid'] || token.substr(-5);
         return new Observable<NoraConnection>(observer => {
             this.logger.info(`nora (${id}): connecting`);
             const version = require('../package.json').version;
-            let uri = `https://node-red-google-home.herokuapp.com/?version=${version}&token=${encodeURIComponent(token)}&notify=${notify}`;
+            const scopeUrl = new URL(decodeToken['scope'] !== 'node-red' ?
+                 decodeToken['scope'] : 'https://node-red-google-home.herokuapp.com/');
+            scopeUrl.searchParams.append('version', version);
+            scopeUrl.searchParams.append('notify', notify.toString());
+            scopeUrl.searchParams.append('token', encodeURIComponent(token));
             if (group) {
-                uri += `&group=${encodeURIComponent(group)}`;
+                scopeUrl.searchParams.append('group', encodeURIComponent(group));
             }
-            const socket = io(uri);
+            const socket = io(scopeUrl.toString());
             const connection = new NoraConnection(socket, this.logger);
             observer.next(connection);
 
