@@ -28,7 +28,7 @@
     "ts-node": "^8.0.2",
     "tslib": "^1.10.0",
     "tslint": "^5.11.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "rxjs": "^6.3.3",
