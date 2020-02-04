@@ -14,6 +14,9 @@
             brightnesscontrol: {
                 value: true,
             },
+            turnonwhenbrightnesschanges: {
+                value: false,
+            },
             passthru: {
                 value: false,
             },
@@ -85,6 +88,7 @@
                     $('#light-off').hide();
                     $('#light-full-state').show();
                     $('#light-color').show();
+                    $('#light-brightnesschangeon').show();
 
                     if ($('#node-input-statepayload').is(':checked')) {
                         $('#light-brightnessoverride').hide();
@@ -97,6 +101,7 @@
                     $('#light-full-state').hide();
                     $('#light-brightnessoverride').hide();
                     $('#light-color').hide();
+                    $('#light-brightnesschangeon').hide();
                 }
             });
             $('#node-input-statepayload').change(function () {
@@ -126,6 +131,10 @@
     <div class="form-row">
         <label style="width:auto" for="node-input-brightnesscontrol"><i class="fa fa-lightbulb-o"></i> Allow brightness control: </label>
         <input type="checkbox" checked id="node-input-brightnesscontrol" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row" id="light-brightnesschangeon">
+        <label style="width:auto" for="node-input-turnonwhenbrightnesschanges"><i class="fa fa-lightbulb-o"></i> Turn on on brightness change: </label>
+        <input type="checkbox" checked id="node-input-turnonwhenbrightnesschanges" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
     <div class="form-row" id="light-color">
         <label style="width:auto" for="node-input-lightcolor"><i class="fa fa-arrow-right"></i> Color support (RGB): </label>

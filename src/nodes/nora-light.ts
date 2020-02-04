@@ -26,6 +26,7 @@ module.exports = function (RED) {
         const brightnessControl = !!config.brightnesscontrol;
         const statepayload = !!config.statepayload;
         const colorControl = !!config.lightcolor;
+        const turnOnWhenBrightnessChanges = !!config.turnonwhenbrightnesschanges;
         const { value: onValue, type: onType } = convertValueType(RED, config.onvalue, config.onvalueType, { defaultValue: true });
         const { value: offValue, type: offType } = convertValueType(RED, config.offvalue, config.offvalueType, { defaultValue: false });
         const brightnessOverride = Math.max(0, Math.min(100, Math.round(config.brightnessoverride))) || 0;
@@ -56,6 +57,7 @@ module.exports = function (RED) {
                 switchMap(connection => connection.addDevice(config.id, {
                     type: 'light',
                     brightnessControl: brightnessControl,
+                    turnOnWhenBrightnessChanges: brightnessControl ? turnOnWhenBrightnessChanges : undefined,
                     colorControl: colorControl,
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
