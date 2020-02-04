@@ -103,21 +103,8 @@ module.exports = function (RED) {
                 });
             } else {
                 if (statepayload) {
-                    var payload = null
-                    if (colorControl) {
-                        payload = {
-                            on: state.on,
-                            brightness: state.brightness,
-                            color: state.color
-                        };
-                    } else {
-                        payload = {
-                            on: state.on,
-                            brightness: state.brightness,
-                        };
-                    }
                     this.send({
-                        payload: payload,
+                        payload: { ...state },
                         topic: config.topic
                     });
                 } else {
