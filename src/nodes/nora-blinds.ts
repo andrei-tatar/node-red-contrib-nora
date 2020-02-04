@@ -57,7 +57,7 @@ module.exports = function (RED) {
             notifyState(state);
             this.send({
                 payload: {
-                    openPercent: config.invert ? 100 - state.openPercent : state.openPercent,
+                    openPercent: adjustPercent(state.openPercent),
                 },
                 topic: config.topic
             });
@@ -73,7 +73,7 @@ module.exports = function (RED) {
                     const openPercent = Math.floor(Math.max(0, Math.min(100, payload.openPercent)));
                     state$.next({
                         ...state$.value,
-                        openPercent: config.invert ? 100 - openPercent : openPercent,
+                        openPercent: adjustPercent(openPercent),
                     });
                 }
             }
@@ -85,7 +85,11 @@ module.exports = function (RED) {
         });
 
         function notifyState(state: BlindsState) {
-            stateString$.next(`(${state.openPercent}%)`);
+            stateString$.next(`(${adjustPercent(state.openPercent)}%)`);
+        }
+
+        function adjustPercent(openPercent: number) {
+            return config.invert ? 100 - openPercent : openPercent;
         }
     });
 };
