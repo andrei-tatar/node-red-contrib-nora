@@ -56,7 +56,9 @@ module.exports = function (RED) {
         ).subscribe(state => {
             notifyState(state);
             this.send({
-                payload: { openPercent: state.openPercent },
+                payload: {
+                    openPercent: config.invert ? 100 - state.openPercent : state.openPercent,
+                },
                 topic: config.topic
             });
         });
@@ -68,9 +70,10 @@ module.exports = function (RED) {
             if (typeof msg === 'object' && typeof msg.payload === 'object') {
                 const payload = msg.payload;
                 if ('openPercent' in payload && typeof payload.openPercent === 'number' && isFinite(payload.openPercent)) {
+                    const openPercent = Math.floor(Math.max(0, Math.min(100, payload.openPercent)));
                     state$.next({
                         ...state$.value,
-                        openPercent: Math.floor(Math.max(0, Math.min(100, payload.openPercent))),
+                        openPercent: config.invert ? 100 - openPercent : openPercent,
                     });
                 }
             }
