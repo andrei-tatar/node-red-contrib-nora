@@ -38,7 +38,7 @@ module.exports = function (RED) {
             takeUntil(close$),
         ).subscribe(err => this.warn(err));
 
-        combineLatest(device$, on$)
+        combineLatest([device$, on$])
             .pipe(
                 tap(([_, on]) => notifyState(on)),
                 skip(1),

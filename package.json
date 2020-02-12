@@ -8,7 +8,7 @@
   "main": "none",
   "scripts": {
     "clean": "rm -rf build",
-    "build": "tsc && cp src/nodes/*.html build/nodes/ && cp -r src/nodes/icons build/nodes/icons",
+    "build": "tslint -p . && tsc && cp src/nodes/*.html build/nodes/ && cp -r src/nodes/icons build/nodes/icons",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pub": "npm run clean && npm run build && npm publish --registry https://registry.npmjs.org/"
   },
@@ -23,16 +23,16 @@
   },
   "homepage": "https://github.com/andrei-tatar/node-red-contrib-nora#readme",
   "devDependencies": {
-    "@types/node": "^11.9.5",
+    "@types/node": "^11.15.6",
     "@types/socket.io-client": "^1.4.32",
-    "ts-node": "^8.0.2",
+    "ts-node": "^8.6.2",
     "tslib": "^1.10.0",
-    "tslint": "^5.11.0",
+    "tslint": "^5.20.1",
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "rxjs": "^6.3.3",
-    "socket.io-client": "^2.1.1"
+    "rxjs": "^6.5.4",
+    "socket.io-client": "^2.3.0"
   },
   "node-red": {
     "version": ">=0.14.0",

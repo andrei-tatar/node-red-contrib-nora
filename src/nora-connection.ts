@@ -48,7 +48,7 @@ export class NoraConnection {
             socket.emit('sync', syncDevices, 'req:sync');
         });
 
-        const update$ = new Subject();
+        const update$ = new Subject<{ [deviceId: string]: any }>();
         update$.pipe(
             withLatestFrom(this.devices$),
             takeUntil(this.destroy$),

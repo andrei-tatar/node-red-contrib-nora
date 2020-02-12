@@ -2,7 +2,10 @@
     "compilerOptions": {
         "module": "commonjs",
         "noImplicitAny": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "sourceMap": false,
+        "strict": true,
         "importHelpers": true,
         "target": "es5",
         "outDir": "./build",

@@ -71,7 +71,7 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
-        combineLatest(device$, state$)
+        combineLatest([device$, state$])
             .pipe(
                 tap(([_, state]) => notifyState(state)),
                 skip(1),
@@ -201,7 +201,7 @@ module.exports = function (RED) {
             if (brightnessControl) {
                 stateString += ` ${state.brightness}`;
             }
-            if (colorControl) {
+            if (colorControl && state.color) {
                 stateString += ` hue: ${Number(state.color.spectrumHsv.hue).toFixed(2)}°`;
                 stateString += ` sat: ${Number(state.color.spectrumHsv.saturation * 100).toFixed(2)}%`;
                 stateString += ` val: ${Number(state.color.spectrumHsv.value * 100).toFixed(2)}%`;

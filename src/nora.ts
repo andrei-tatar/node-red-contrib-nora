@@ -1,6 +1,6 @@
 import { combineLatest, EMPTY, merge, Observable, Subject, timer } from 'rxjs';
 import {
-    delay, delayWhen, distinctUntilChanged, finalize, ignoreElements,
+    delayWhen, distinctUntilChanged, finalize, ignoreElements,
     publishReplay, refCount, retryWhen, startWith, switchMap, takeUntil, tap
 } from 'rxjs/operators';
 import * as io from 'socket.io-client';
@@ -56,7 +56,7 @@ export class NoraService {
                 startWith(false),
                 distinctUntilChanged()
             );
-            const updateStatus$ = combineLatest(connected$, state)
+            const updateStatus$ = combineLatest([connected$, state])
                 .pipe(
                     tap(([isConnected, currentState]) => {
                         node.status(isConnected
@@ -72,7 +72,9 @@ export class NoraService {
                     existing.uses--;
                     connected.complete();
                     if (existing.uses === 0) {
-                        clearTimeout(existing.stopTimer);
+                        if (existing.stopTimer) {
+                            clearTimeout(existing.stopTimer);
+                        }
                         existing.stopTimer = setTimeout(() => {
                             if (existing.uses === 0) {
                                 existing.stop.next();
