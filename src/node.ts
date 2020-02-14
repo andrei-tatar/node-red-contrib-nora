@@ -1,7 +1,7 @@
 export interface NodeInterface {
     credentials: { [key: string]: string };
 
-    on(type: 'input', callback: (msg: any) => void);
+    on(type: 'input', callback: (msg: { payload: any, topic?: string }) => void);
     on(type: 'close', callback: () => void);
 
     send(msg: any);

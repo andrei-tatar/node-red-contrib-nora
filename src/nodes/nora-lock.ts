@@ -24,12 +24,16 @@ module.exports = function (RED) {
             isJammed: false,
         });
         const stateString$ = new Subject<string>();
-        
-        const { value: lockValue, type: lockType } = convertValueType(RED, config.lockValue, config.lockValueType, { defaultValue: true });
-        const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockValue, config.unlockValueType, { defaultValue: false });
 
-        const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedValue, config.jammedValueType, { defaultValue: true });
-        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue, config.unjammedValueType, { defaultValue: false });
+        const { value: lockValue, type: lockType } = convertValueType(RED, config.lockValue,
+            config.lockValueType, { defaultValue: true });
+        const { value: unlockValue, type: unlockType } = convertValueType(RED, config.unlockValue,
+            config.unlockValueType, { defaultValue: false });
+
+        const { value: jammedValue, type: jammedType } = convertValueType(RED, config.jammedValue,
+            config.jammedValueType, { defaultValue: true });
+        const { value: unjammedValue, type: unjammedType } = convertValueType(RED, config.unjammedValue,
+            config.unjammedValueType, { defaultValue: false });
 
         const device$ = NoraService
             .getService(RED)
@@ -46,7 +50,7 @@ module.exports = function (RED) {
                 takeUntil(close$),
             );
 
-        combineLatest(device$, state$)
+        combineLatest([device$, state$])
             .pipe(
                 tap(([_, state]) => notifyState(state)),
                 skip(1),
@@ -74,14 +78,14 @@ module.exports = function (RED) {
                 this.error('Lock is jammed');
             }
         });
-        
+
         this.on('input', msg => {
             if (config.passthru) {
                 this.send(msg);
             }
             const myLockValue = getValue(RED, this, lockValue, lockType);
             const myUnlockValue = getValue(RED, this, unlockValue, unlockType);
-            if (msg.topic == "Jammed") {
+            if (msg.topic?.toLowerCase() === 'jammed') {
                 const myJammedValue = getValue(RED, this, jammedValue, jammedType);
                 const myUnjammedValue = getValue(RED, this, unjammedValue, unjammedType);
                 if (RED.util.compareObjects(myJammedValue, msg.payload)) {
@@ -93,7 +97,8 @@ module.exports = function (RED) {
                 if (RED.util.compareObjects(myLockValue, msg.payload)) {
                     state$.next({ ...state$.value, isLocked: true });
                 } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
-                    state$.next({ ...state$.value, isLocked: false });            }
+                    state$.next({ ...state$.value, isLocked: false });
+                }
             }
         });
 
@@ -103,10 +108,10 @@ module.exports = function (RED) {
         });
 
         function notifyState(state: LockState) {
-            if(state.isJammed){
-                stateString$.next(`(jammed)`)
+            if (state.isJammed) {
+                stateString$.next(`(jammed)`);
             } else {
-                stateString$.next(`(${state.isLocked ? 'locked' : 'unlocked'})`)
+                stateString$.next(`(${state.isLocked ? 'locked' : 'unlocked'})`);
             }
         }
 
