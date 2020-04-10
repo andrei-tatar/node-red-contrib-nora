@@ -122,6 +122,21 @@
         <input type="hidden" id="node-input-closevalueType">
     </div>
     <div class="form-row">
+        <label style="width:auto" for="node-input-twoFactor"><i class="fa fa-key"></i>&nbsp;&nbsp;Two-factor authentication:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="checkbox" id="node-input-twoFactor" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row hidden" id="node-input-twoFactorMode-row">
+        <label for="node-input-twoFactorMode">&nbsp;&nbsp;Mode</label>
+        <select id="node-input-twoFactorMode" style="width:70%;">
+            <option value="ack">Acknowledgement (yes or no)</option>
+            <option value="pin">PIN authentication</option>
+        </select>
+    </div>
+    <div class="form-row hidden" id="node-input-twoFactorPin-row">
+        <label for="node-input-twoFactorPin">&nbsp;&nbsp;PIN</label>
+        <input type="text" id="node-input-twoFactorPin">
+    </div>
+    <div class="form-row">
         <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint   </label>
         <input type="text" id="node-input-roomhint">
     </div>
