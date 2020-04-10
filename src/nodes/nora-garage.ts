@@ -37,6 +37,8 @@ module.exports = function (RED) {
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
                     state: state$.value,
+                    twoFactor: config.twoFactor ? config.twoFactorMode : undefined,
+                    pin: ( config.twoFactor && config.twoFactorMode == 'pin') ? (config.twoFactorPin+'') : undefined
                 })),
                 publishReplay(1),
                 refCount(),
