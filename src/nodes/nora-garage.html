@@ -46,6 +46,16 @@
             closevalueType: {
                 value: 'bool'
             },
+            twoFactor: {
+                value: false,
+            },
+                twoFactorMode: {
+                value: 'ack',
+            },
+                twoFactorPin: {
+                value: 1234,
+                validate: RED.validators.number()
+            },
         },
         inputs: 1,
         outputs: 1,
@@ -54,6 +64,26 @@
             return this.name || this.devicename || 'garage';
         },
         oneditprepare: function () {
+            var updatetwoFactorMode = function () {
+                let twoFact = $('#node-input-twoFactor').is(':checked')
+                let mode = $('#node-input-twoFactorMode').val();
+                if ( (twoFact == true) && (mode == 'pin')) {
+                    $('#node-input-twoFactorPin-row').show();
+                } else {
+                    $('#node-input-twoFactorPin-row').hide();
+                }
+            };
+            updatetwoFactorMode ();
+            $('#node-input-twoFactor').change(function () {
+                if (this.checked) {
+                    $('#node-input-twoFactorMode-row').show();
+                } else {
+                    $('#node-input-twoFactorMode-row').hide();
+                    $('#node-input-twoFactorPin-row').hide();
+                }
+            });
+            $('#node-input-twoFactor').change(updatetwoFactorMode);
+            $('#node-input-twoFactorMode').change(updatetwoFactorMode);
             $('#node-input-openvalue').typedInput({
                 default: 'bool',
                 typeField: $("#node-input-openvalueType"),
@@ -90,6 +120,21 @@
         <label for="node-input-closevalue" style="padding-left:10px; margin-right:-10px">Close Payload</label>
         <input type="text" id="node-input-closevalue" style="width:70%">
         <input type="hidden" id="node-input-closevalueType">
+    </div>
+        <div class="form-row">
+        <label style="width:auto" for="node-input-twoFactor"><i class="fa fa-key"></i>&nbsp;&nbsp;Two-factor authentication:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="checkbox" id="node-input-twoFactor" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row hidden" id="node-input-twoFactorMode-row">
+        <label for="node-input-twoFactorMode">&nbsp;&nbsp;Mode</label>
+        <select id="node-input-twoFactorMode" style="width:70%;">
+            <option value="ack">Acknowledgement (yes or no)</option>
+            <option value="pin">PIN authentication</option>
+        </select>
+    </div>
+    <div class="form-row hidden" id="node-input-twoFactorPin-row">
+        <label for="node-input-twoFactorPin">&nbsp;&nbsp;PIN</label>
+        <input type="text" id="node-input-twoFactorPin">
     </div>
     <div class="form-row">
         <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint   </label>
