@@ -46,6 +46,16 @@
             closevalueType: {
                 value: 'bool'
             },
+            twoFactor: {
+                value: false,
+            },
+                twoFactorMode: {
+                value: 'ack',
+            },
+                twoFactorPin: {
+                value: 1234,
+                validate: RED.validators.number()
+            },
         },
         inputs: 1,
         outputs: 1,
@@ -54,6 +64,26 @@
             return this.name || this.devicename || 'garage';
         },
         oneditprepare: function () {
+            var updatetwoFactorMode = function () {
+            let twoFact = $('#node-input-twoFactor').is(':checked')
+            let mode = $('#node-input-twoFactorMode').val();
+            if ( (twoFact == true) && (mode == 'pin')) {
+                    $('#node-input-twoFactorPin-row').show();
+                } else {
+                    $('#node-input-twoFactorPin-row').hide();
+                }
+            };
+            updatetwoFactorMode ();
+            $('#node-input-twoFactor').change(function () {
+                if (this.checked) {
+                    $('#node-input-twoFactorMode-row').show();
+                } else {
+                    $('#node-input-twoFactorMode-row').hide();
+                    $('#node-input-twoFactorPin-row').hide();
+                }
+            });
+            $('#node-input-twoFactor').change(updatetwoFactorMode);
+            $('#node-input-twoFactorMode').change(updatetwoFactorMode);
             $('#node-input-openvalue').typedInput({
                 default: 'bool',
                 typeField: $("#node-input-openvalueType"),
