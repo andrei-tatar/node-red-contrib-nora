@@ -2,13 +2,8 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
-
-interface SpeakerState {
-    on: boolean;
-    online: boolean;
-    currentVolume: number;
-    isMuted: boolean;
-}
+import { SpeakerDevice } from '../nora-common/models/speaker';
+import { updateState } from './util';
 
 module.exports = function (RED) {
     RED.nodes.registerType('nora-speaker', function (this: NodeInterface, config) {
@@ -19,7 +14,7 @@ module.exports = function (RED) {
 
         const step = Math.max(1, Math.min(50, (isFinite(config.step) ? config.step : 5) || 5));
         const close$ = new Subject();
-        const state$ = new BehaviorSubject<SpeakerState>({
+        const state$ = new BehaviorSubject<SpeakerDevice['state']>({
             on: false,
             online: true,
             currentVolume: 50,
@@ -59,7 +54,7 @@ module.exports = function (RED) {
         device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
-        ).subscribe((state: SpeakerState) => {
+        ).subscribe((state) => {
             notifyState(state);
             this.send({
                 payload: {
@@ -74,22 +69,7 @@ module.exports = function (RED) {
             if (config.passthru) {
                 this.send(msg);
             }
-            const update: Partial<SpeakerState> = {};
-            if (typeof msg === 'object' && typeof msg.payload === 'object') {
-                const payload = msg.payload;
-                if ('on' in payload) {
-                    update.on = !!payload.on;
-                }
-                if ('volume' in payload && typeof payload.volume === 'number' && isFinite(payload.volume)) {
-                    update.currentVolume = Math.floor(Math.max(0, Math.min(100, payload.volume)));
-                }
-                if (Object.keys(update).length > 0) {
-                    state$.next({
-                        ...state$.value,
-                        ...update,
-                    });
-                }
-            }
+            updateState(msg?.payload, state$);
         });
 
         this.on('close', () => {
@@ -97,7 +77,7 @@ module.exports = function (RED) {
             close$.complete();
         });
 
-        function notifyState(state: SpeakerState) {
+        function notifyState(state: SpeakerDevice['state']) {
             stateString$.next(`(${state.on ? 'on' : 'off'}:${state.currentVolume})`);
         }
     });

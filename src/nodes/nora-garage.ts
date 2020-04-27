@@ -2,12 +2,8 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
-import { convertValueType, getValue } from './util';
-
-interface GarageState {
-    online: boolean;
-    openPercent: number;
-}
+import { GarageDevice } from '../nora-common/models/garage';
+import { convertValueType, getValue, updateState } from './util';
 
 module.exports = function (RED) {
     RED.nodes.registerType('nora-garage', function (this: NodeInterface, config) {
@@ -17,7 +13,7 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const state$ = new BehaviorSubject<GarageState>({
+        const state$ = new BehaviorSubject<GarageDevice['state']>({
             online: true,
             openPercent: 0,
         });
@@ -84,6 +80,8 @@ module.exports = function (RED) {
                 state$.next({ ...state$.value, openPercent: 100 });
             } else if (RED.util.compareObjects(myCloseValue, msg.payload)) {
                 state$.next({ ...state$.value, openPercent: 0 });
+            } else {
+                updateState(msg?.payload, state$);
             }
         });
 
@@ -92,7 +90,7 @@ module.exports = function (RED) {
             close$.complete();
         });
 
-        function notifyState(state: GarageState) {
+        function notifyState(state: GarageDevice['state']) {
             if (state.openPercent === 0) {
                 stateString$.next(`(closed)`);
             } else {

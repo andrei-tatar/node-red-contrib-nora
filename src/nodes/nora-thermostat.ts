@@ -2,17 +2,10 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
-import { R } from './util';
+import { ThermostatDevice } from '../nora-common/models/thermostat';
+import { R, updateState } from './util';
 
-interface ThermostatState {
-    online: boolean;
-    thermostatMode: string;
-    thermostatHumidityAmbient?: number;
-    thermostatTemperatureAmbient: number;
-    thermostatTemperatureSetpoint: number;
-    thermostatTemperatureSetpointLow: number;
-    thermostatTemperatureSetpointHigh: number;
-}
+type ThermostatState = ThermostatDevice['state'];
 
 module.exports = function (RED) {
     RED.nodes.registerType('nora-thermostat', function (this: NodeInterface, config) {
@@ -88,28 +81,32 @@ module.exports = function (RED) {
                 this.send(msg);
             }
 
-            const payload = msg.payload;
-            if (typeof payload !== 'object') { return; }
-
-            const update: Partial<ThermostatState> = {};
-
-            let mode = payload.mode;
-            if (typeof mode === 'string') {
-                mode = mode.toLowerCase().trim();
-                if (availableModes.indexOf(mode) >= 0) {
-                    update.thermostatMode = mode;
-                }
-            }
-
-            getNumberAndUpdate(payload, 'setpoint', update, 'thermostatTemperatureSetpoint');
-            getNumberAndUpdate(payload, 'setpointHigh', update, 'thermostatTemperatureSetpointHigh');
-            getNumberAndUpdate(payload, 'setpointLow', update, 'thermostatTemperatureSetpointLow');
-            getNumberAndUpdate(payload, 'temperature', update, 'thermostatTemperatureAmbient');
-            getNumberAndUpdate(payload, 'humidity', update, 'thermostatHumidityAmbient');
-
-            if (Object.keys(update).length) {
-                state$.next({ ...state$.value, ...update });
-            }
+            updateState(msg?.payload, state$, [
+                {
+                    from: 'mode',
+                    to: 'thermostatMode',
+                },
+                {
+                    from: 'setpoint',
+                    to: 'thermostatTemperatureSetpoint',
+                },
+                {
+                    from: 'setpointHigh',
+                    to: 'thermostatTemperatureSetpointHigh',
+                },
+                {
+                    from: 'setpointLow',
+                    to: 'thermostatTemperatureSetpointLow',
+                },
+                {
+                    from: 'temperature',
+                    to: 'thermostatTemperatureAmbient',
+                },
+                {
+                    from: 'humidity',
+                    to: 'thermostatHumidityAmbient',
+                },
+            ]);
         });
 
         this.on('close', () => {
@@ -121,13 +118,6 @@ module.exports = function (RED) {
             stateString$.next(
                 R`(${state.thermostatMode}/T:${state.thermostatTemperatureAmbient}/S:${state.thermostatTemperatureSetpoint})`
             );
-        }
-
-        function getNumberAndUpdate<T>(payload: any, propName: string, update: T, targetPropName: keyof T) {
-            const value = parseFloat(payload[propName]);
-            if (!isNaN(value) && isFinite(value)) {
-                update[targetPropName] = value as any;
-            }
         }
     });
 };

@@ -1,0 +1,288 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "anyOf": [
+        {
+            "$ref": "#/definitions/State"
+        },
+        {
+            "$ref": "#/definitions/OpenCloseState"
+        },
+        {
+            "$ref": "#/definitions/OnOffState"
+        },
+        {
+            "$ref": "#/definitions/LockUnlockState"
+        },
+        {
+            "$ref": "#/definitions/Thermostat"
+        },
+        {
+            "additionalProperties": false,
+            "properties": {
+                "brightness": {
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                },
+                "on": {
+                    "type": "boolean"
+                },
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "brightness",
+                "on",
+                "online"
+            ],
+            "type": "object"
+        },
+        {
+            "additionalProperties": false,
+            "properties": {
+                "brightness": {
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                },
+                "color": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "spectrumHsv": {
+                            "additionalProperties": false,
+                            "properties": {
+                                "hue": {
+                                    "maximum": 360,
+                                    "minimum": 0,
+                                    "type": "number"
+                                },
+                                "saturation": {
+                                    "maximum": 1,
+                                    "minimum": 0,
+                                    "type": "number"
+                                },
+                                "value": {
+                                    "maximum": 1,
+                                    "minimum": 0,
+                                    "type": "number"
+                                }
+                            },
+                            "required": [
+                                "hue",
+                                "saturation",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    },
+                    "required": [
+                        "spectrumHsv"
+                    ],
+                    "type": "object"
+                },
+                "on": {
+                    "type": "boolean"
+                },
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "brightness",
+                "color",
+                "on",
+                "online"
+            ],
+            "type": "object"
+        },
+        {
+            "additionalProperties": false,
+            "properties": {
+                "currentVolume": {
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                },
+                "isMuted": {
+                    "type": "boolean"
+                },
+                "on": {
+                    "type": "boolean"
+                },
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "currentVolume",
+                "isMuted",
+                "on",
+                "online"
+            ],
+            "type": "object"
+        },
+        {
+            "$ref": "#/definitions/Partial<Thermostat>"
+        }
+    ],
+    "definitions": {
+        "LockUnlockState": {
+            "additionalProperties": false,
+            "properties": {
+                "isJammed": {
+                    "type": "boolean"
+                },
+                "isLocked": {
+                    "type": "boolean"
+                },
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "isJammed",
+                "isLocked",
+                "online"
+            ],
+            "type": "object"
+        },
+        "OnOffState": {
+            "additionalProperties": false,
+            "properties": {
+                "on": {
+                    "type": "boolean"
+                },
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "on",
+                "online"
+            ],
+            "type": "object"
+        },
+        "OpenCloseState": {
+            "additionalProperties": false,
+            "properties": {
+                "online": {
+                    "type": "boolean"
+                },
+                "openPercent": {
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                }
+            },
+            "required": [
+                "online",
+                "openPercent"
+            ],
+            "type": "object"
+        },
+        "Partial<Thermostat>": {
+            "additionalProperties": false,
+            "properties": {
+                "online": {
+                    "type": "boolean"
+                },
+                "thermostatHumidityAmbient": {
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                },
+                "thermostatMode": {
+                    "enum": [
+                        "auto",
+                        "cool",
+                        "dry",
+                        "eco",
+                        "fan-only",
+                        "heat",
+                        "heatcool",
+                        "off",
+                        "on",
+                        "purifier"
+                    ],
+                    "type": "string"
+                },
+                "thermostatTemperatureAmbient": {
+                    "type": "number"
+                },
+                "thermostatTemperatureSetpoint": {
+                    "type": "number"
+                },
+                "thermostatTemperatureSetpointHigh": {
+                    "type": "number"
+                },
+                "thermostatTemperatureSetpointLow": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "State": {
+            "additionalProperties": false,
+            "properties": {
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "online"
+            ],
+            "type": "object"
+        },
+        "Thermostat": {
+            "additionalProperties": false,
+            "properties": {
+                "online": {
+                    "type": "boolean"
+                },
+                "thermostatHumidityAmbient": {
+                    "maximum": 100,
+                    "minimum": 0,
+                    "type": "number"
+                },
+                "thermostatMode": {
+                    "$ref": "#/definitions/ThermostatMode"
+                },
+                "thermostatTemperatureAmbient": {
+                    "type": "number"
+                },
+                "thermostatTemperatureSetpoint": {
+                    "type": "number"
+                },
+                "thermostatTemperatureSetpointHigh": {
+                    "type": "number"
+                },
+                "thermostatTemperatureSetpointLow": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "online",
+                "thermostatMode",
+                "thermostatTemperatureAmbient"
+            ],
+            "type": "object"
+        },
+        "ThermostatMode": {
+            "enum": [
+                "auto",
+                "cool",
+                "dry",
+                "eco",
+                "fan-only",
+                "heat",
+                "heatcool",
+                "off",
+                "on",
+                "purifier"
+            ],
+            "type": "string"
+        }
+    }
+}
+

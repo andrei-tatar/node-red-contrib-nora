@@ -8,7 +8,8 @@
   "main": "none",
   "scripts": {
     "clean": "rm -rf build",
-    "build": "tslint -p . && tsc && cp src/nodes/*.html build/nodes/ && cp -r src/nodes/icons build/nodes/icons",
+    "schema": "typescript-json-schema src/nora-common/models/index.ts AllStates --noExtraProps --required --strictNullChecks > src/schema/state.json",
+    "build": "tslint -p . && tsc && cp src/nodes/*.html build/nodes/ && cp -r src/nodes/icons build/nodes/icons && npm run schema && cp -r src/schema build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pub": "npm run clean && npm run build && npm publish --registry https://registry.npmjs.org/"
   },
@@ -23,15 +24,17 @@
   },
   "homepage": "https://github.com/andrei-tatar/node-red-contrib-nora#readme",
   "devDependencies": {
-    "@types/node": "^11.15.6",
+    "@types/node": "^11.15.12",
     "@types/socket.io-client": "^1.4.32",
-    "ts-node": "^8.6.2",
-    "tslib": "^1.10.0",
+    "ts-node": "^8.9.1",
+    "tslib": "^1.11.1",
     "tslint": "^5.20.1",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3",
+    "typescript-json-schema": "^0.42.0"
   },
   "dependencies": {
-    "rxjs": "^6.5.4",
+    "ajv": "^6.12.2",
+    "rxjs": "^6.5.5",
     "socket.io-client": "^2.3.0"
   },
   "node-red": {

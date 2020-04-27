@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { AllStates } from './nora-common/models';
 import { NoraConnection } from './nora-connection';
 
 export class NoraDevice {
@@ -17,7 +18,7 @@ export class NoraDevice {
     ) {
     }
 
-    updateState(partial) {
+    updateState(partial: AllStates) {
         const keys = Object.keys(partial);
         for (const key of keys) {
             const newValue = partial[key];

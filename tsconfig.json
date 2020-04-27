@@ -6,9 +6,12 @@
         "noUnusedParameters": true,
         "sourceMap": false,
         "strict": true,
+        "esModuleInterop": true,
         "importHelpers": true,
         "target": "es5",
         "outDir": "./build",
-        "lib": ["es2015"],
+        "lib": [
+            "es2015"
+        ],
     },
 }

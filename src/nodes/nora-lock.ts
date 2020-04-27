@@ -2,13 +2,8 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
-import { convertValueType, getValue } from './util';
-
-interface LockState {
-    online: boolean;
-    isLocked: boolean;
-    isJammed: boolean;
-}
+import { LockDevice } from '../nora-common/models/lock';
+import { convertValueType, getValue, updateState } from './util';
 
 module.exports = function (RED) {
     RED.nodes.registerType('nora-lock', function (this: NodeInterface, config) {
@@ -18,7 +13,7 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const state$ = new BehaviorSubject<LockState>({
+        const state$ = new BehaviorSubject<LockDevice['state']>({
             online: true,
             isLocked: false,
             isJammed: false,
@@ -98,6 +93,8 @@ module.exports = function (RED) {
                     state$.next({ ...state$.value, isLocked: true });
                 } else if (RED.util.compareObjects(myUnlockValue, msg.payload)) {
                     state$.next({ ...state$.value, isLocked: false });
+                } else {
+                    updateState(msg?.payload, state$);
                 }
             }
         });
@@ -107,7 +104,7 @@ module.exports = function (RED) {
             close$.complete();
         });
 
-        function notifyState(state: LockState) {
+        function notifyState(state: LockDevice['state']) {
             if (state.isJammed) {
                 stateString$.next(`(jammed)`);
             } else {

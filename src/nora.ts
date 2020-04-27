@@ -3,7 +3,7 @@ import {
     delayWhen, distinctUntilChanged, finalize, ignoreElements,
     publishReplay, refCount, retryWhen, startWith, switchMap, takeUntil, tap
 } from 'rxjs/operators';
-import * as io from 'socket.io-client';
+import io from 'socket.io-client';
 import { Logger } from './logger';
 import { ConfigNode } from './node';
 import { NoraConnection } from './nora-connection';

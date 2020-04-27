@@ -2,11 +2,8 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
-
-interface BlindsState {
-    online: boolean;
-    openPercent: number;
-}
+import { BlindsDevice } from '../nora-common/models/blinds';
+import { updateState } from './util';
 
 module.exports = function (RED) {
     RED.nodes.registerType('nora-blinds', function (this: NodeInterface, config) {
@@ -16,7 +13,7 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const state$ = new BehaviorSubject<BlindsState>({
+        const state$ = new BehaviorSubject<BlindsDevice['state']>({
             online: true,
             openPercent: 100,
         });
@@ -67,16 +64,7 @@ module.exports = function (RED) {
             if (config.passthru) {
                 this.send(msg);
             }
-            if (typeof msg === 'object' && typeof msg.payload === 'object') {
-                const payload = msg.payload;
-                if ('openPercent' in payload && typeof payload.openPercent === 'number' && isFinite(payload.openPercent)) {
-                    const openPercent = Math.floor(Math.max(0, Math.min(100, payload.openPercent)));
-                    state$.next({
-                        ...state$.value,
-                        openPercent: adjustPercent(openPercent),
-                    });
-                }
-            }
+            updateState(msg?.payload, state$);
         });
 
         this.on('close', () => {
@@ -84,7 +72,7 @@ module.exports = function (RED) {
             close$.complete();
         });
 
-        function notifyState(state: BlindsState) {
+        function notifyState(state: BlindsDevice['state']) {
             stateString$.next(`(${adjustPercent(state.openPercent)}%)`);
         }
 

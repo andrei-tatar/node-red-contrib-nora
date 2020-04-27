@@ -2,7 +2,8 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
-import { convertValueType, getValue } from './util';
+import { OutletDevice } from '../nora-common/models/outlet';
+import { convertValueType, getValue, updateState } from './util';
 
 module.exports = function (RED) {
     RED.nodes.registerType('nora-outlet', function (this: NodeInterface, config) {
@@ -12,7 +13,7 @@ module.exports = function (RED) {
         if (!noraConfig || !noraConfig.token) { return; }
 
         const close$ = new Subject();
-        const on$ = new BehaviorSubject(false);
+        const state$ = new BehaviorSubject<OutletDevice['state']>({ on: false, online: true });
         const stateString$ = new Subject<string>();
 
         const { value: onValue, type: onType } = convertValueType(RED, config.onvalue, config.onvalueType, { defaultValue: true });
@@ -26,20 +27,20 @@ module.exports = function (RED) {
                     type: 'outlet',
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
-                    state: { online: true, on: on$.value },
+                    state: state$.value,
                 })),
                 publishReplay(1),
                 refCount(),
                 takeUntil(close$),
             );
 
-        combineLatest([device$, on$])
+        combineLatest([device$, state$])
             .pipe(
-                tap(([_, on]) => notifyState(on)),
+                tap(([_, state]) => notifyState(state.on)),
                 skip(1),
                 takeUntil(close$),
             )
-            .subscribe(([device, on]) => device.updateState({ on }));
+            .subscribe(([device, state]) => device.updateState(state));
 
         device$.pipe(
             switchMap(d => d.errors$),
@@ -49,9 +50,9 @@ module.exports = function (RED) {
         device$.pipe(
             switchMap(d => d.state$),
             takeUntil(close$),
-        ).subscribe(s => {
-            const value = s.on;
-            notifyState(s.on);
+        ).subscribe(state => {
+            const value = state.on;
+            notifyState(state.on);
             this.send({
                 payload: getValue(RED, this, value ? onValue : offValue, value ? onType : offType),
                 topic: config.topic
@@ -65,9 +66,11 @@ module.exports = function (RED) {
             const myOnValue = getValue(RED, this, onValue, onType);
             const myOffValue = getValue(RED, this, offValue, offType);
             if (RED.util.compareObjects(myOnValue, msg.payload)) {
-                on$.next(true);
+                state$.next({ ...state$.value, on: true });
             } else if (RED.util.compareObjects(myOffValue, msg.payload)) {
-                on$.next(false);
+                state$.next({ ...state$.value, on: false });
+            } else {
+                updateState(msg?.payload, state$);
             }
         });
 
