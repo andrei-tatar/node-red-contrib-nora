@@ -69,7 +69,9 @@ module.exports = function (RED) {
             if (config.passthru) {
                 this.send(msg);
             }
-            updateState(msg?.payload, state$);
+            updateState(msg?.payload, state$, [
+                { from: 'volume', to: 'currentVolume' },
+            ]);
         });
 
         this.on('close', () => {
