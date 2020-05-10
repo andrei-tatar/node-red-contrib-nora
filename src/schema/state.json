@@ -124,6 +124,27 @@
         },
         {
             "$ref": "#/definitions/Partial<Thermostat>"
+        },
+        {
+            "additionalProperties": false,
+            "properties": {
+                "isDocked": {
+                    "type": "boolean"
+                },
+                "isPaused": {
+                    "type": "boolean"
+                },
+                "isRunning": {
+                    "type": "boolean"
+                },
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "online"
+            ],
+            "type": "object"
         }
     ],
     "definitions": {

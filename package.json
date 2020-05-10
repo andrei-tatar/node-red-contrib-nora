@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "ajv": "^6.12.2",
+    "lodash": "^4.17.15",
     "rxjs": "^6.5.5",
     "socket.io-client": "^2.3.0"
   },
@@ -49,7 +50,8 @@
       "nora-outlet": "build/nodes/nora-outlet.js",
       "nora-light": "build/nodes/nora-light.js",
       "nora-garage": "build/nodes/nora-garage.js",
-      "nora-lock": "build/nodes/nora-lock.js"
+      "nora-lock": "build/nodes/nora-lock.js",
+      "nora-vacuum": "build/nodes/nora-vacuum.js"
     }
   }
 }

@@ -1,0 +1,119 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nora-vacuum', {
+        category: 'nora',
+        color: 'rgb(153, 204, 255)',
+        icon: 'assistant.png',
+        defaults: {
+            devicename: {
+                value: 'Vacuum',
+                required: true,
+            },
+            roomhint: {
+                value: ''
+            },
+            name: {
+                value: ''
+            },
+            passthru: {
+                value: false,
+            },
+            nora: {
+                type: 'nora-config',
+                required: true
+            },
+            topic: {
+                value: ''
+            },
+            startvalue: {
+                value: true,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'startvalueType') : function (v) {
+                    return true
+                })
+            },
+            startvalueType: {
+                value: 'bool'
+            },
+            stopvalue: {
+                value: false,
+                required: true,
+                validate: (RED.validators.hasOwnProperty('typedInput') ? RED.validators.typedInput(
+                    'stopvalueType') : function (v) {
+                    return true
+                })
+            },
+            stopvalueType: {
+                value: 'bool'
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        paletteLabel: 'vacuum',
+        label: function () {
+            return this.name || this.devicename || 'vacuum';
+        },
+        oneditprepare: function () {
+            $('#node-input-startvalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-startvalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
+            $('#node-input-stopvalue').typedInput({
+                default: 'bool',
+                typeField: $("#node-input-stopvalueType"),
+                types: ['str', 'num', 'bool', 'json', 'bin', 'date']
+            });
+        },
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nora-vacuum">
+    <div class="form-row">
+        <label for="node-input-nora"><i class="fa fa-table"></i> Config</label>
+        <input type="text" id="node-input-nora">
+    </div>
+    <div class="form-row">
+        <label for="node-input-devicename"><i class="fa fa-i-cursor"></i> Vacuum</label>
+        <input type="text" id="node-input-devicename">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
+        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-startvalue" style="padding-left:25px; margin-right:-10px">Start Payload</label>
+        <input type="text" id="node-input-startvalue" style="width:65%">
+        <input type="hidden" id="node-input-startvalueType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-stopvalue" style="padding-left:25px; margin-right:-10px">Stop Payload</label>
+        <input type="text" id="node-input-stopvalue" style="width:65%">
+        <input type="hidden" id="node-input-stopvalueType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
+        <input type="text" id="node-input-roomhint">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic" style="padding-left:25px; margin-right:-25px">Topic</label>
+        <input type="text" id="node-input-topic">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nora-vacuum">
+    <p>
+    Represents a <a href="https://developers.google.com/actions/smarthome/guides/vacuum">Google Home vacuum</a>.
+    Outputs a message when Google Home changes the state of the vacuum and updates the
+    state of the vacuum in Google Home on input messages.
+    <br>
+    The On/Off payload specifies what message should be sent for the different states of the vacuum and how incoming
+    messages translate to the state of the vacuum.
+    <br>
+    <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
+</p>
+</script>

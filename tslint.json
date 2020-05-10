@@ -46,7 +46,7 @@
                 ]
             }
         ],
-        "no-console": true,
+        "no-console": false,
         "no-arg": true,
         "no-construct": true,
         "no-debugger": true,
