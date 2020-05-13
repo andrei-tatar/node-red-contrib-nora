@@ -1,10 +1,13 @@
-import { BehaviorSubject, EMPTY, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, concat, EMPTY, Observable, of, Subject } from 'rxjs';
 import {
     debounceTime, publishReplay, refCount,
     scan, switchMap, takeUntil, withLatestFrom
 } from 'rxjs/operators';
+import { registerDeviceForLocalExection } from './local-execution';
 import { Logger } from './logger';
+import { Device } from './nora-common/models';
 import { NoraDevice } from './nora-device';
+import { compose } from './nora-common/util';
 
 export class NoraConnection {
     private destroy$ = new Subject();
@@ -27,6 +30,7 @@ export class NoraConnection {
     readonly errors$ = this.errors.asObservable();
 
     constructor(
+        private group: string,
         private socket: SocketIOClient.Socket,
         logger: Logger,
     ) {
@@ -42,7 +46,7 @@ export class NoraConnection {
         ).subscribe(devices => {
             const syncDevices = {};
             for (const device of devices) {
-                syncDevices[device.id] = device.config;
+                syncDevices[device.id] = device.device;
             }
             logger.info(`nora: sync ${devices.length} devices`);
             socket.emit('sync', syncDevices, 'req:sync');
@@ -92,7 +96,7 @@ export class NoraConnection {
         socket.on('activate-scene', (ids: string[], deactivate: boolean) => activate$.next({ ids, deactivate }));
     }
 
-    addDevice(id: string, deviceConfig) {
+    addDevice(id: string, deviceConfig: Device): Observable<NoraDevice> {
         return new Observable<NoraDevice>(observer => {
             const device = new NoraDevice(id, deviceConfig, this);
 
@@ -108,7 +112,12 @@ export class NoraConnection {
                     id: device.id,
                 });
             };
-        });
+        }).pipe(
+            switchMap(device => concat(
+                registerDeviceForLocalExection(compose({ group: this.group, id }), device),
+                of(device)
+            )),
+        );
     }
 
     destroy() {

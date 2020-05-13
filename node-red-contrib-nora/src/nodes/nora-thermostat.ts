@@ -2,6 +2,7 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { publishReplay, refCount, skip, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { NodeInterface } from '../node';
 import { NoraService } from '../nora';
+import { ThermostatMode } from '../nora-common/models/states/thermostat';
 import { ThermostatDevice } from '../nora-common/models/thermostat';
 import { R, updateState } from './util';
 
@@ -24,7 +25,7 @@ module.exports = function (RED) {
             thermostatTemperatureSetpointHigh: 30,
         });
         const stateString$ = new Subject<string>();
-        const availableModes: string[] = config.modes.split(',');
+        const availableModes: ThermostatMode[] = config.modes.split(',');
 
         const device$ = NoraService
             .getService(RED)

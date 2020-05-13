@@ -55,7 +55,7 @@ module.exports = function (RED) {
                         online: true,
                         ...state$.value,
                     },
-                })),
+                } as LightDevice)),
                 publishReplay(1),
                 refCount(),
                 takeUntil(close$),

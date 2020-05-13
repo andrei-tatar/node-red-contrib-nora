@@ -1,0 +1,57 @@
+{
+  "name": "node-red-contrib-nora",
+  "version": "0.0.34",
+  "description": "Set of nodes for google home integration",
+  "keywords": [
+    "node-red"
+  ],
+  "main": "none",
+  "scripts": {
+    "clean": "rm -rf build",
+    "schema": "typescript-json-schema src/nora-common/models/index.ts AllStates --noExtraProps --required --strictNullChecks > src/schema/state.json",
+    "build": "tslint -p . && tsc && cp src/nodes/*.html build/nodes/ && cp -r src/nodes/icons build/nodes/icons && npm run schema && cp -r src/schema build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pub": "npm run clean && npm run build && npm publish --registry https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrei-tatar/node-red-contrib-nora.git"
+  },
+  "author": "Andrei Tatar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrei-tatar/node-red-contrib-nora/issues"
+  },
+  "homepage": "https://github.com/andrei-tatar/node-red-contrib-nora#readme",
+  "devDependencies": {
+    "@types/cbor": "^5.0.0",
+    "@types/node": "^11.15.12",
+    "@types/socket.io-client": "^1.4.32",
+    "ts-node": "^8.9.1",
+    "tslib": "^1.11.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.8.3",
+    "typescript-json-schema": "^0.42.0"
+  },
+  "dependencies": {
+    "ajv": "^6.12.2",
+    "cbor": "^5.0.2",
+    "rxjs": "^6.5.5",
+    "socket.io-client": "^2.3.0"
+  },
+  "node-red": {
+    "version": ">=0.14.0",
+    "nodes": {
+      "nora-blinds": "build/nodes/nora-blinds.js",
+      "nora-config": "build/nodes/nora-config.js",
+      "nora-scene": "build/nodes/nora-scene.js",
+      "nora-speaker": "build/nodes/nora-speaker.js",
+      "nora-switch": "build/nodes/nora-switch.js",
+      "nora-thermostat": "build/nodes/nora-thermostat.js",
+      "nora-outlet": "build/nodes/nora-outlet.js",
+      "nora-light": "build/nodes/nora-light.js",
+      "nora-garage": "build/nodes/nora-garage.js",
+      "nora-lock": "build/nodes/nora-lock.js"
+    }
+  }
+}
