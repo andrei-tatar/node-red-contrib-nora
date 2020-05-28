@@ -1,0 +1,151 @@
+<script type="text/javascript">
+    RED.nodes.registerType('nora-sensor', {
+        category: 'nora',
+        color: 'rgb(153, 204, 255)',
+        icon: 'assistant.png',
+        defaults: {
+            nora: {
+                type: 'nora-config',
+                required: true
+            },
+            devicename: {
+                value: 'Sensor',
+                required: true,
+            },
+            passthru: {
+                value: false,
+            },
+            traits: {
+                value: ''
+            },
+            temperatureunit: {
+                value: 'C'
+            },
+            distanceunit: {
+                value: 'KILOMETERS'
+            },
+            isrechargeable: {
+                value: false
+            },
+            roomhint: {
+                value: ''
+            },
+            topic: {
+                value: ''
+            },
+            name: {
+                value: ''
+            },
+        },
+        inputs: 1,
+        outputs: 1,
+        paletteLabel: 'sensor',
+        label: function () {
+            return this.name || this.devicename || 'sensor';
+        },
+        oneditprepare: function () {
+            var availableTraits = ['open-close', 'brightness', 'temperature', 'humidity', 'energy', 'carbon-monoxide', 'smoke', 'air-quality', 'leak'];
+            var traitState = this.traits.split(',');
+            availableTraits.forEach((trait, index) => {
+                var rowIndex = Math.floor(index / 3);
+                if (index % 3 === 0) {
+                    $('#traits-container').append(
+                        '<div class="trait-row" trait-row-index="' + rowIndex + '"></div>'
+                    );
+                }
+                $('[trait-row-index=' + rowIndex + ']').append(
+                    '<div class="trait-item">' +
+                    '<input type="checkbox" ' +
+                    (traitState.indexOf(trait) >= 0 ? 'checked ' : '') +
+                    'class="sensor-trait" data-trait="' + trait + '" id="trait-' + trait + '">' +
+                    '<label for="trait-' + trait + '">' + trait + '</label>' +
+                    '</div>'
+                );
+            });
+            
+            $('#trait-temperature').addEventListener('input', (event) => {
+                $('temperature-options').style.display = event.target.value === true ? 'block' : 'none';
+            });
+            $('trait-energy').addEventListener('input', (event) => {
+                $('energy-options').style.display = event.target.value === true ? 'block' : 'none';
+            });
+            $('trait-brightness').addEventListener('input', (event) => {
+                $('brightness-options').style.display = event.target.value === true ? 'block' : 'none';
+            });
+        },
+        oneditsave: function () {
+            var traitState = [];
+            $('.thermostat-mode:checked').each(function () {
+                traitState.push($(this).attr('data-mode'));
+            });
+            this.traits = traitState.join(',');
+            this.temperatureunit = $('#unit-celsius').prop('checked') ? 'C' : 'F';
+            this.distanceunit = $('#unit-kilometers').prop('checked') ? 'KILOMETERS' : 'MILES';
+        },
+    });
+</script>
+
+<script type="text/x-red" data-template-name="nora-sensor">
+    <div class="form-row">
+        <label for="node-input-nora"><i class="fa fa-table"></i> Config</label>
+        <input type="text" id="node-input-nora">
+    </div>
+    <div class="form-row">
+        <label for="node-input-devicename"><i class="fa fa-i-cursor"></i> Sensor</label>
+        <input type="text" id="node-input-devicename">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
+        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
+    </div>
+    <div class="form-row d-flex flex-column">
+        <label style="width:100%"><i class="fa fa-cog"></i> Supported traits</label>
+        <div id="traits-container"></div>
+    </div>
+    <div id="brightness-options" class="form-row" style="display:none;">
+        <label for="node-input-temperatureunit"><i class="fa fa-thermometer-half"></i> Temperature Unit</label>
+        <select id="node-input-temperatureunit">
+            <option value="C">Celcius</option>
+            <option value="F">Farenheit</option>
+        </select>
+    </div>
+    <div id="temperature-options" class="form-row" style="display:none;">
+            <label style="width:auto"><i class="fa fa-thermometer-half"></i> Temperature Unit: </label>
+            <input style="width:auto;margin:0" id="unit-celsius" type="radio" name="unit" value="C"><label style="width:40px" for="unit-celsius">&nbsp;C</label>
+            <input style="width:auto;margin:0" id="unit-fahrenheit" type="radio" name="unit" value="F"><label  style="width:40px" for="unit-fahrenheit">&nbsp;F</label>
+    </div>
+    <div id="energy-options" style="display:none;">
+        <div class="form-row">
+            <label style="width:auto"><i class="fa fa-map-marker"></i> Distance Unit: </label>
+            <input style="width:auto;margin:0" id="unit-kilometers" type="radio" name="unit" value="KILOMETERS"><label style="width:40px" for="unit-kilometers">&nbsp;Kilometers</label>
+            <input style="width:auto;margin:0" id="unit-miles" type="radio" name="unit" value="MILES"><label  style="width:40px" for="unit-miles">&nbsp;Miles</label>
+        </div>
+        <div class="form-row">
+            <label style="width:auto" for="node-input-isrechargeable"><i class="fa fa-battery-three-quarters"></i> Does this represent a rechargable device: </label>
+            <input type="checkbox" id="node-input-isrechargeable" style="display:inline-block; width:auto; vertical-align:top;">
+        </div>
+    </div>
+    <div class="form-row">
+        <label for="node-input-roomhint"><i class="fa fa-i-cursor"></i> Room Hint</label>
+        <input type="text" id="node-input-roomhint">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic" style="padding-left:25px; margin-right:-25px">Topic</label>
+        <input type="text" id="node-input-topic">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="nora-sensor">
+    <p>
+        Represents a <a href="https://developers.google.com/actions/smarthome/guides/sensor">Google Home sensor</a>.
+        There is no output from Google Home for this node, but the value sent to Google Home can be passed through for other purposes.
+        <br>
+        The payload value ought to match the chosen sensor type, or it will be ignored.
+        <br>
+        <strong>Room Hint</strong>: Provides the current room of the device in the user's home to simplify setup.
+    </p>
+</script>
