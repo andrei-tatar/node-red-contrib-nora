@@ -28,6 +28,7 @@ module.exports = function (RED) {
                     type: 'vacuum',
                     name: config.devicename,
                     roomHint: config.roomhint || undefined,
+                    pausable: !!config.pausable,
                     state: state$.value,
                 })),
                 publishReplay(1),

@@ -11,6 +11,9 @@
             roomhint: {
                 value: ''
             },
+            pausable: {
+                value: false,
+            },
             name: {
                 value: ''
             },
@@ -64,6 +67,13 @@
                 typeField: $("#node-input-stopvalueType"),
                 types: ['str', 'num', 'bool', 'json', 'bin', 'date']
             });
+            $('#node-input-pausable').change(function () {
+                if (this.checked) {
+                    $('#deactivate-payload').show();
+                } else {
+                    $('#deactivate-payload').hide();
+                }
+            });
         },
     });
 </script>
@@ -76,6 +86,10 @@
     <div class="form-row">
         <label for="node-input-devicename"><i class="fa fa-i-cursor"></i> Vacuum</label>
         <input type="text" id="node-input-devicename">
+    </div>
+    <div class="form-row">
+        <label style="width:auto" for="node-input-pausable"><i class="fa fa-arrow-right"></i> Vacuum pausable: </label>
+        <input type="checkbox" id="node-input-pausable" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
     <div class="form-row">
         <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, pass through to output: </label>
