@@ -6,8 +6,8 @@ import {
 import { registerDeviceForLocalExection } from './local-execution';
 import { Logger } from './logger';
 import { Device } from './nora-common/models';
-import { NoraDevice } from './nora-device';
 import { compose } from './nora-common/util';
+import { NoraDevice } from './nora-device';
 
 export class NoraConnection {
     private destroy$ = new Subject();

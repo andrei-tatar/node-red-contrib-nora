@@ -10,6 +10,7 @@
     "clean": "rm -rf build",
     "schema": "typescript-json-schema src/nora-common/models/index.ts AllStates --noExtraProps --required --strictNullChecks > src/schema/state.json",
     "build": "tslint -p . && tsc && cp src/nodes/*.html build/nodes/ && cp -r src/nodes/icons build/nodes/icons && npm run schema && cp -r src/schema build",
+    "build-windows": "tslint -p . && tsc && copyfiles -f src\\nodes\\*.html build\\nodes\\ && copyfiles -f src\\nodes\\icons\\* build\\nodes\\icons\\ && npm run schema && copyfiles -f src\\schema build\\",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pub": "npm run clean && npm run build && npm publish --registry https://registry.npmjs.org/"
   },
@@ -51,7 +52,8 @@
       "nora-outlet": "build/nodes/nora-outlet.js",
       "nora-light": "build/nodes/nora-light.js",
       "nora-garage": "build/nodes/nora-garage.js",
-      "nora-lock": "build/nodes/nora-lock.js"
+      "nora-lock": "build/nodes/nora-lock.js",
+      "nora-vacuum": "build/nodes/nora-vacuum.js"
     }
   }
 }

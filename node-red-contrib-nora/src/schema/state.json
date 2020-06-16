@@ -123,7 +123,25 @@
             "type": "object"
         },
         {
-            "$ref": "#/definitions/Partial<Thermostat>"
+            "additionalProperties": false,
+            "properties": {
+                "isDocked": {
+                    "type": "boolean"
+                },
+                "isPaused": {
+                    "type": "boolean"
+                },
+                "isRunning": {
+                    "type": "boolean"
+                },
+                "online": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "online"
+            ],
+            "type": "object"
         }
     ],
     "definitions": {
@@ -179,47 +197,6 @@
                 "online",
                 "openPercent"
             ],
-            "type": "object"
-        },
-        "Partial<Thermostat>": {
-            "additionalProperties": false,
-            "properties": {
-                "online": {
-                    "type": "boolean"
-                },
-                "thermostatHumidityAmbient": {
-                    "maximum": 100,
-                    "minimum": 0,
-                    "type": "number"
-                },
-                "thermostatMode": {
-                    "enum": [
-                        "auto",
-                        "cool",
-                        "dry",
-                        "eco",
-                        "fan-only",
-                        "heat",
-                        "heatcool",
-                        "off",
-                        "on",
-                        "purifier"
-                    ],
-                    "type": "string"
-                },
-                "thermostatTemperatureAmbient": {
-                    "type": "number"
-                },
-                "thermostatTemperatureSetpoint": {
-                    "type": "number"
-                },
-                "thermostatTemperatureSetpointHigh": {
-                    "type": "number"
-                },
-                "thermostatTemperatureSetpointLow": {
-                    "type": "number"
-                }
-            },
             "type": "object"
         },
         "State": {
