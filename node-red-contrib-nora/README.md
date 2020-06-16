@@ -39,12 +39,12 @@ For feedback, you can join the Node-RED topic opened for this project on the Nod
 
 1. Open your node-red instance and install `node-red-contrib-nora`. You can do this by clicking the hamburger menu in the top-right corner and select `Manage palette`, select `Install`, type `node-red-contrib-nora` and click the install button.
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/1_pallete.png" width=350>
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/2_pallete_install.png" width=500>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/1_pallete.png" width=350>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/2_pallete_install.png" width=500>
 
 2. After installation is complete a new set of nodes shoud appear under nora category
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/3_new_nodes.png" width=200>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/3_new_nodes.png" width=200>
 
 ### Get the NORA service token (*These steps need to happen only once*)
 
@@ -56,11 +56,11 @@ For feedback, you can join the Node-RED topic opened for this project on the Nod
 
 1. Create a new flow (or open the existing one you want to use) and add the NORA nodes you plan to use. Each NORA node will correspond to a Google Home device. In this case we are going to use a light node.
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/4_flow.png" width=400>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/4_flow.png" width=400>
 
 2. Edit the light node. Add a new nora-config (configs can be reused between multiple nora devices) in which you need to paste the token copied from the NORA homepage. The `Group` is used if you want to use multiple connections to the same NORA account (if you use multiple Node-RED instances).
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/5_edit_node.png" width=800>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/5_edit_node.png" width=800>
 
 3. Deploy your flow
 
@@ -69,18 +69,18 @@ Once you have at least one NORA device you can link your Google Home to NORA
 
 1. Open your Google Home and click Add
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/6_ghome_open.png" width=300>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/6_ghome_open.png" width=300>
 
 2. In the `Add and manage` screen, select `Set up device`.
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/7_ghome_add.png" width=300>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/7_ghome_add.png" width=300>
 
 3. Select `Have something already set up?`
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/8_ghome_setup.png" width=300>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/8_ghome_setup.png" width=300>
 
 4. Select `NORA` (in this image it's already linked) and login again with the Google/Github account you used when logging in to the NORA homepage.
 
-<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/node-red-contrib-nora/master/doc/9_ghome_manage.jpeg" width=300>
+<img src="https://raw.githubusercontent.com/andrei-tatar/node-red-contrib-nora/master/node-red-contrib-nora/doc/9_ghome_manage.jpeg" width=300>
 
 The devices setup in Node-RED will sync with your Google Home and now you are able to control them via voice/routines/etc.
